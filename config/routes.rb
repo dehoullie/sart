@@ -1,12 +1,30 @@
 Rails.application.routes.draw do
+  # Devise authentication
   devise_for :users
-  root to: "pages#home"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Root
+  root to: "movies#index"
+
+  # Movies
+  resources :movies, only: [:index, :show]
+
+  # Genres (optional - only if you're showing a genre list or filtering by it)
+  resources :genres, only: [:index]
+
+  # Favorites (watchlist-style)
+  resources :favorites, only: [:index, :create, :destroy]
+
+  # Cast and characters (optional unless you build cast browsing UI)
+  resources :casts, only: [:index, :show]
+  resources :characters, only: [:create, :destroy]
+
+  # AI Recommendations (mood-based)
+  get 'recommendations/mood', to: 'recommendations#mood', as: :mood_recommendations
+  post 'recommendations/generate', to: 'recommendations#generate', as: :generate_recommendations
+
+  # Static or dashboard pages
+  get 'dashboard', to: 'pages#dashboard'
+
+  # Health check for uptime monitor
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end
