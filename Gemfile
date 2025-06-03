@@ -76,3 +76,5 @@ end
 
 # API for images upload
 gem "cloudinary"
+
+gem "lucide-rails", "~> 0.5.1"
