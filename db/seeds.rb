@@ -2,163 +2,183 @@
 
 # =============================================================================
 # Seed Script: Populate the database with movie, genre, cast, and character data
-# This script fetches data from The Movie Database (TMDB) API and uses it to
-# create local records for genres, top-rated movies, their associated genres,
-# cast members, and the characters they portray. Existing records are cleared
-# before seeding to avoid duplicates.
+#                AND attach each movie's backdrop image to Cloudinary.
+#
+# Requirements:
+#  • CLOUDINARY_URL must be set in your environment (.env or elsewhere).
+#  • config/storage.yml has a "cloudinary" service with folder: 'sart'.
+#  • config/environments/development.rb (or production.rb) uses:
+#       config.active_storage.service = :cloudinary
+#
+# Workflow:
+# 1) Clean out old records.
+# 2) Fetch and save TMDB genres.
+# 3) Fetch top-rated movies → for each:
+#    a) Fetch detailed movie info (runtime + genres).
+#    b) Create a Movie record.
+#    c) Link its genres via movies_genres.
+#    d) Fetch first 10 cast members → create Cast & Character records.
+#    e) Build the full "backdrop" URL and attach it via Active Storage.
+# 4) Print summary counts.
 # =============================================================================
 
-require 'uri'
+require 'open-uri'  # so we can call URI.open(...) to download images
 require 'net/http'
+require 'uri'
 require 'json'
 
 # -----------------------------------------------------------------------------
 # Section: Clean existing records
-# We destroy all existing records for characters, cast, movie-genre associations,
-# movies, and genres, but only if they already exist. This ensures a fresh start
-# each time the seed is run.
+# We destroy all existing records (only if they exist) so we don't get duplicates.
 # -----------------------------------------------------------------------------
 puts "🧹 Cleaning database..."
 
-# Only destroy Character records if any exist
 Character.destroy_all if Character.any?
-
-# Only destroy Cast records if any exist
-Cast.destroy_all if Cast.any?
-
-# Only destroy MoviesGenre join records if any exist
+Cast.destroy_all      if Cast.any?
 MoviesGenre.destroy_all if MoviesGenre.any?
-
-# Only destroy Movie records if any exist
-Movie.destroy_all if Movie.any?
-
-# Only destroy Genre records if any exist
-Genre.destroy_all if Genre.any?
+Movie.destroy_all     if Movie.any?
+Genre.destroy_all     if Genre.any?
 
 puts "✅ Cleaned."
 
 # -----------------------------------------------------------------------------
-# Section: API setup and helper method
-# Define the base URL for TMDB and a helper method `fetch_json` that handles
-# HTTP GET requests to the TMDB API and parses the JSON response.
+# Section: API setup & helper
+# We define TMDB base URL and a helper method to GET + parse JSON from TMDB.
 # -----------------------------------------------------------------------------
 API_TOKEN = ENV['TMDB_API_KEY']
-BASE_URL = "https://api.themoviedb.org/3"
+BASE_URL   = "https://api.themoviedb.org/3"
 
-# Helper method to send GET requests to the TMDB API and parse JSON
 def fetch_json(endpoint)
-  # Construct the full URL by combining the base URL and endpoint
+  # Build full URI: BASE_URL + endpoint string
   url = URI("#{BASE_URL}#{endpoint}")
   http = Net::HTTP.new(url.host, url.port)
   http.use_ssl = true
 
-  # Build the HTTP GET request, including the TMDB API authorization header
+  # Build GET request with TMDB credentials
   request = Net::HTTP::Get.new(url)
-  request["accept"] = "application/json"
+  request["accept"]        = "application/json"
   request["Authorization"] = "Bearer #{API_TOKEN}"
 
-  # Execute the request and parse the JSON response
+  # Execute & parse the response
   response = http.request(request)
   JSON.parse(response.body)
 end
 
 # -----------------------------------------------------------------------------
-# Section: Fetch and create genres
-# Retrieve the list of movie genres from TMDB and store each as a Genre record.
-# Each genre is saved with its TMDB `api_genre_id` and name.
+# Section: Fetch & create genres
+# We pull TMDB's /genre/movie/list, then create each Genre record with:
+#   • api_genre_id: TMDB's numeric ID
+#   • name:          TMDB's genre name (e.g. "Action")
 # -----------------------------------------------------------------------------
 puts "🌱 Seeding genres..."
 genre_data = fetch_json("/genre/movie/list?language=en")["genres"]
 
 genre_data.each do |genre|
-  # Create a new Genre record using the TMDB genre ID for reference
-  Genre.create!(api_genre_id: genre["id"], name: genre["name"])
+  Genre.create!(
+    api_genre_id: genre["id"],
+    name:         genre["name"]
+  )
 end
 
-# Log how many genres were created in total
 puts "✅ #{Genre.count} genres created."
 
 # -----------------------------------------------------------------------------
-# Section: Fetch and create top-rated movies, their genres, cast, and characters
-# 1. Retrieve the first page of top-rated movies from TMDB.
-# 2. For each movie, fetch detailed info (including runtime and genres).
-# 3. Create a Movie record.
-# 4. Link the Movie to its genres via the movies_genres join table.
-# 5. Fetch the cast list (first 10 members) for each movie and insert Cast and
-#    Character records, avoiding duplicate cast entries based on `api_cast_id`.
+# Section: Fetch & create top-rated movies + related data + image attachment
+# 1) Pull /movie/top_rated (page 1).
+# 2) For each movie in that list:
+#    a) Pull /movie/:id    to get runtime, genres array, and backdrop_path.
+#    b) Create Movie record with those attributes.
+#    c) Link its genres using MoviesGenre.
+#    d) Pull /movie/:id/credits, take the first 10 cast members → create Cast and Character.
+#    e) Build full TMDB backdrop URL and attach via Active Storage
+#       (Cloudinary will store it under 'sart/' folder automatically).
 # -----------------------------------------------------------------------------
-puts "🎬 Seeding top-rated movies (with genres, cast, characters)..."
+puts "🎬 Seeding top-rated movies (with genres, cast, characters, and images)..."
 movies_data = fetch_json("/movie/top_rated?language=en-US&page=1")["results"]
 
 movies_data.each do |movie_data|
-  # Fetch full movie details to obtain runtime and genre information
+  # 1a) Fetch detailed info for this movie (including runtime, genres, backdrop_path)
   details = fetch_json("/movie/#{movie_data['id']}?language=en-US")
-  # Skip if the movie title is missing
   next unless details["title"].present?
 
-  # Create the Movie record with fields from the TMDB detail response
+  # 1b) Create the Movie record in our DB
   movie = Movie.create!(
     api_movie_id: details["id"],
-    title: details["title"],
-    overview: details["overview"],
+    title:        details["title"],
+    overview:     details["overview"],
     release_date: details["release_date"],
-    runtime: details["runtime"]
+    runtime:      details["runtime"]
   )
 
-  # -----------------------------------------------------------------------------
-  # Link genres to the created movie:
-  # For each genre in the movie details, find the local Genre record by TMDB ID
-  # and create an association through the MoviesGenre join table.
-  # -----------------------------------------------------------------------------
+  # 1c) Link genres to the new Movie:
+  #     TMDB returns an array of genre hashes; each has an "id" we match to our local Genre.
   details["genres"].each do |genre_data|
     genre = Genre.find_by(api_genre_id: genre_data["id"])
     MoviesGenre.create!(movie: movie, genre: genre) if genre
   end
 
-  # -----------------------------------------------------------------------------
-  # Fetch the cast list (first 10 members) for the movie:
-  # For each cast member:
-  # - Check if a Cast record with the same api_cast_id already exists.
-  # - If not, create a new Cast record with name and api_cast_id.
-  # - In either case, create a Character record linking the movie, cast, and
-  #   the character name from the API response.
-  # -----------------------------------------------------------------------------
+  # 1d) Fetch cast list (first 10 members) to populate Cast & Character tables
   credits = fetch_json("/movie/#{movie.api_movie_id}/credits")
-  cast_inserted = 0
+  cast_inserted      = 0
   character_inserted = 0
 
   credits["cast"].first(10).each do |cast_data|
-    # Attempt to find an existing Cast by TMDB ID to avoid duplicates
+    #  • Check if a Cast with this TMDB cast ID already exists (avoid duplicates)
     cast = Cast.find_by(api_cast_id: cast_data["id"])
+
     unless cast
-      # Create a new Cast record with the TMDB cast ID and actor name
+      #  • If not, create a new Cast record
       cast = Cast.create!(
         api_cast_id: cast_data["id"],
-        name: cast_data["name"]
+        name:        cast_data["name"]
       )
       cast_inserted += 1
     end
 
-    # Create the Character record linking the movie and cast, storing role name
+    #  • Create the Character record linking this movie & this cast member
     Character.create!(
-      movie: movie,
-      cast: cast,
+      movie:          movie,
+      cast:           cast,
       character_name: cast_data["character"]
     )
     character_inserted += 1
   end
 
-  # Log how many new cast members and characters were inserted for this movie
-  puts "🎥 #{movie.title} created with #{cast_inserted} new cast members and #{character_inserted} characters"
+  # 1e) Attach the backdrop image to this movie via Active Storage:
+  #     • TMDB only gives us a “backdrop_path” string (e.g. "/kXfq...jpg")
+  #     • Full URL: "https://image.tmdb.org/t/p/original#{backdrop_path}"
+  #     • We open that URL and hand it to Active Storage. Because
+  #       config.active_storage.service = :cloudinary and storage.yml
+  #       has folder: 'sart', Cloudinary will upload it under /sart/.
+  if details["backdrop_path"].present?
+    backdrop_url = "https://image.tmdb.org/t/p/original#{details['backdrop_path']}"
+
+    # Use URI.open to fetch the remote image; give it a sensible filename
+    file_io = URI.open(backdrop_url)
+
+    # Attach to the “poster” (or however you named your attachment on Movie)
+    # (Assuming Movie model has: "has_one_attached :poster")
+    movie.poster.attach(
+      io:           file_io,
+      filename:     "#{movie.api_movie_id}_backdrop.jpg",
+      content_type: file_io.content_type
+    )
+  end
+
+  # Log how many cast/characters were inserted for this movie
+  puts "🎥 #{movie.title} created with "\
+       "#{cast_inserted} new cast members, "\
+       "#{character_inserted} characters, "\
+       "and backdrop attached."
 end
 
 # -----------------------------------------------------------------------------
-# Summary output
-# After all seeding is done, log the total counts for movies, genres, cast, and
-# characters to give a quick overview of the seeded data.
+# Section: Summary output
+# After seeding everything, print totals so we can verify what got created.
 # -----------------------------------------------------------------------------
 puts "🌟 Seeding complete!"
-puts "🎞️  Total Movies: #{Movie.count}"
-puts "📚 Total Genres: #{Genre.count}"
-puts "🧑‍🎤 Total Casts: #{Cast.count}"
-puts "🎭 Total Characters: #{Character.count}"
+puts "🎞️  Total Movies:     #{Movie.count}"
+puts "📚  Total Genres:     #{Genre.count}"
+puts "🧑‍🎤  Total Casts:      #{Cast.count}"
+puts "🎭  Total Characters: #{Character.count}"
+puts "🖼️  Total Attachments: #{ActiveStorage::Attachment.count}"

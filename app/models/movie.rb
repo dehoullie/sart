@@ -7,4 +7,6 @@ class Movie < ApplicationRecord
 
   has_many :characters, dependent: :destroy
   has_many :casts, through: :characters
+
+  has_one_attached :poster
 end

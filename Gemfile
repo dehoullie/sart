@@ -73,3 +73,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# API for images upload
+gem "cloudinary"
