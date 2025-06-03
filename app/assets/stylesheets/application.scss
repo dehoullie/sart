@@ -10,3 +10,41 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+
+.dark-mode {
+  // Bootstrap’s default “light” values were set already (by the above import).
+  // Here we simply override the CSS custom properties for dark mode.
+
+  // Body background and text
+  --bs-body-bg:       #212529;   // very dark gray
+  --bs-body-color:    #e9ecef;   // near‐white
+
+  // “Cards” and components
+  --bs-card-bg:       #343a40;
+  --bs-card-border-color: #454d55;
+  --bs-card-color:    #e9ecef;
+
+  // Tables
+  --bs-table-bg:      #212529;
+  --bs-table-color:   #e9ecef;
+  --bs-table-border-color: #2c3034;
+
+  // Navbar
+  --bs-navbar-bg:     #343a40;
+  --bs-navbar-color:  #e9ecef;
+  --bs-navbar-toggler-border-color: #4d555b;
+
+  // Buttons (you can individually override each variant if desired)
+  --bs-btn-bg:        #495057;
+  --bs-btn-color:     #e9ecef;
+  --bs-btn-hover-bg:  #5a6268;
+
+  // Forms
+  --bs-form-control-bg:    #495057;
+  --bs-form-control-color: #e9ecef;
+  --bs-form-control-border-color: #6c757d;
+
+  // You can continue overriding any other variables you want—
+  // see Bootstrap’s `_root.scss` for the full list of CSS custom-property names.
+}
