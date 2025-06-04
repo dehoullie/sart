@@ -8,5 +8,6 @@ class GenresController < ApplicationController
     else
       @movies = Movie.none # No movies if genre not found
     end
+
   end
 end
