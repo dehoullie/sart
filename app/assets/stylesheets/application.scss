@@ -6,7 +6,6 @@
 // External libraries
 @import "bootstrap";
 @import "font-awesome";
-@import "animate";
 
 
 // Your CSS partials
@@ -52,4 +51,7 @@
 }
 a{
   text-decoration: none;
+}
+html {
+  scroll-behavior: smooth;
 }
