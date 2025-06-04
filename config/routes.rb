@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   # Movies
   resources :movies, only: [:index, :show]
 
-  # Genres (optional - only if you're showing a genre list or filtering by it)
+  # Genres
   resources :genres, only: [:index]
 
   # Favorites (watchlist-style)

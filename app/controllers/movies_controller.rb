@@ -16,13 +16,20 @@ class MoviesController < ApplicationController
         .distinct
         .order(popularity: :desc)
         .limit(10)
-      render partial: "results", locals: { movies: @movies }
+      render partial: "shared/results", locals: { movies: @movies }
     else
       # No search term: render the full index (banner + home-content) as normal
       @movies       = Movie.limit(3)                            # for banner & home-content
       @last_three = Movie.all.sample(3) if Movie.count > 3 # for banner
-      @genres       = Genre.all                                  # if home-content needs it
-      @recent_movies = Movie.order(created_at: :desc).limit(6)   # if home-content needs it
+      # Get a list of 5 genres with most count movies
+      @top_genres   = Genre
+        .left_joins(:movies)
+        .group(:id)
+        .order("COUNT(movies.id) DESC")
+        .limit(5)
+      @genres       = Genre.all
+      # Popular movies for the home-content section order by popularity column in the movies table
+      @popular_movies = Movie.order(popularity: :desc).limit(5)
 
       respond_to do |format|
         format.html   # will render app/views/movies/index.html.erb

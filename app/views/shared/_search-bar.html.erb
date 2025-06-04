@@ -21,7 +21,7 @@
   </div>
   <!-- Country button -->
   <div class="col-auto ms-2">
-    <button class="btn btn-outline-light h-100 blurry-me" type="button" data-bs-toggle="modal" data-bs-target="#countryModal">
+    <button class="btn btn-outline-secondary h-100 blurry-me" type="button" data-bs-toggle="modal" data-bs-target="#countryModal">
       <span style="font-size: 1.25rem;"> <span class="fi fi-de fis"></span></span>
       <i class="bi bi-chevron-right ms-1"></i>
     </button>
@@ -39,7 +39,7 @@
         <div class="row">
           <% Movie::COUNTRIES.each do |country| %>
             <div class="col-12 mb-2 country-btn-wrapper">
-              <button class="btn btn-outline-secondary w-100 country-btn" type="button" data-country="<%= country[:name] %>">
+              <button class="btn btn-outline-secondary w-100 country-btn text-white" type="button" data-country="<%= country[:name] %>">
                 <span class="fi fi-<%= country[:code] %> fis"></span> <%= country[:name] %>
               </button>
             </div>
