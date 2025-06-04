@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # Root
   root to: "movies#index"
 
+  # This route will return just the “results” partial
+  get "/movies/live_search", to: "movies#live_search", as: :live_search_movies
   # Movies
   resources :movies, only: [:index, :show]
 
