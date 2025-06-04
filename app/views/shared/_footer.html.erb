@@ -1,17 +1,25 @@
-<nav class="navbar fixed-bottom bg-body-tertiary">
+<nav class="navbar fixed-bottom border-top bg-body-tertiary">
   <div class="container-fluid p-0">
     <ul class="navbar-nav flex-row d-flex justify-content-between w-100">
       <li class="nav-item flex-fill text-center">
-        <a class="nav-link active" href="#"><%= lucide_icon('house') %></a>
+        <%= link_to lucide_icon('house'), root_path, class: "nav-link active"  %>
       </li>
       <li class="nav-item flex-fill text-center">
-        <a class="nav-link active" href="#"><%= lucide_icon('search') %></a>
+        <a class="nav-link active" href="#"><%= lucide_icon('bot') %></a>
       </li>
       <li class="nav-item flex-fill text-center">
-        <a class="nav-link active" href="#"><%= lucide_icon('heart') %></a>
+        <% if user_signed_in? %>
+          <%= link_to lucide_icon('heart'), favorites_path, class: "nav-link active"  %>
+        <% else %>
+          <%= link_to lucide_icon('heart'), new_user_session_path, class: "nav-link active", notice: "You must be logged in"  %>
+        <% end %>
       </li>
       <li class="nav-item flex-fill text-center">
-        <a class="nav-link active" href="#"><%= lucide_icon('circle-user-round') %></a>
+         <% if user_signed_in? %>
+          <%= link_to lucide_icon('circle-user-round'), destroy_user_session_path, data: {turbo_method: :delete}, class: "nav-link active"  %>
+        <% else %>
+          <%= link_to lucide_icon('circle-user-round'), new_user_session_path, class: "nav-link active", notice: "You must be logged in"  %>
+        <% end %>
       </li>
     </ul>
   </div>
