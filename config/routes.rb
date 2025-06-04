@@ -27,4 +27,7 @@ Rails.application.routes.draw do
 
   # Health check for uptime monitor
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Genres Category Index
+  resources :genres, only: [:index]
 end
