@@ -16,6 +16,15 @@ export default class extends Controller {
     if (event.target.value.length < 3) {
       return;
     }
+    // fadeout everything inside id="movies_container"
+    const moviesContainer = document.getElementById("movies_container_content");
+    if (moviesContainer) {
+      moviesContainer.classList.add("animate__animated", "animate__fadeOut");
+      // remove the class after animation ends
+      moviesContainer.addEventListener("animationend", () => {
+        moviesContainer.classList.remove("animate__animated", "animate__fadeOut");
+      });
+    }
     this.element.requestSubmit();
   }
 }

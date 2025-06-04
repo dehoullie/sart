@@ -6,9 +6,10 @@
 <!-- 2) Turbo Frame wrapping banner, home-content, and results -->
 <turbo-frame id="movies_container">
   <!-- Banner with 3 movies -->
+  <div id="movies_container_content">
   <%= render partial: "banner", locals: { movies: @movies } %>
 
   <!-- Categories or “home‐content” -->
   <%= render partial: "home-content", locals: { movies: @movies } %>
-
+</div>
 </turbo-frame>

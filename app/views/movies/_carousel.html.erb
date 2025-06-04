@@ -2,20 +2,20 @@
   <div class="carousel-inner" style="height: 100%;">
 
     <div class="carousel-item active d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[0].poster.key,
+      <%= cl_image_tag @last_three[0].backdrop.key,
           # Images should be centralized in the carousel
           class: "d-block h-100 carousel-img",
           alt: @last_three[0].title %>
     </div>
 
     <div class="carousel-item d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[1].poster.key,
+      <%= cl_image_tag @last_three[1].backdrop.key,
           class: "d-block h-100 carousel-img",
           alt: @last_three[1].title %>
     </div>
 
     <div class="carousel-item d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[2].poster.key,
+      <%= cl_image_tag @last_three[2].backdrop.key,
           class: "d-block h-100 carousel-img",
           alt: @last_three[2].title %>
     </div>

@@ -1,10 +1,10 @@
 <%= turbo_frame_tag :movies_container do %>
   <% if @movies.any? %>
-    <div class="container px-3 pb-3 results-container">
+    <div class="container px-3 pb-3 results-container" data-controller="animate-results">
       <div class="row g-3">
         <% @movies.each do |movie| %>
-          <div class="col-6 d-flex">
-            <div class="card flex-fill">
+          <div class="col-6 d-flex" >
+            <div class="card flex-fill animate__animated" data-animate-results-target="card">
               <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
               <div class="card-body">
                 <h5 class="card-title"><%= movie.title %></h5>

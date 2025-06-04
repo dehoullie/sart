@@ -4,7 +4,18 @@ class MoviesController < ApplicationController
 
     if q.present?
       # User submitted a non‐empty search. Return just the search results partial.
-      @movies = Movie.where("title ILIKE ?", "%#{q}%").limit(10)
+      @movies = Movie
+        .left_outer_joins(characters: :cast)
+        .where(
+          "movies.title ILIKE :q
+           OR movies.overview ILIKE :q
+           OR characters.character_name ILIKE :q
+           OR casts.name ILIKE :q",
+          q: "%#{q}%"
+        )
+        .distinct
+        .order(popularity: :desc)
+        .limit(10)
       render partial: "results", locals: { movies: @movies }
     else
       # No search term: render the full index (banner + home-content) as normal

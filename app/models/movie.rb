@@ -9,6 +9,7 @@ class Movie < ApplicationRecord
   has_many :casts, through: :characters
 
   has_one_attached :poster
+  has_one_attached :backdrop
 
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
