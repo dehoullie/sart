@@ -1,0 +1,56 @@
+<form method="get"
+      action="<%= movies_path %>"
+      class="px-3 py-3 banner-form d-flex"
+      data-turbo-frame="movies_container"
+      data-controller="search-suggestions"
+      autocomplete="off">
+  <div class="input-group">
+    <input class="form-control border-end-0 border blurry-me"
+           type="search"
+           id="movie-search"
+           placeholder="Search for movies, actors, directors..."
+           name="query"
+           aria-label="Search"
+           data-action="keyup->search-suggestions#onKeyUp"
+           data-search-suggestions-target="input">
+    <span class="input-group-append">
+      <button class="btn btn-outline-secondary border-start-0 border ms-n5 blurry-me h-100" type="submit">
+        <i class="fa fa-search"></i>
+      </button>
+    </span>
+  </div>
+  <!-- Country button -->
+  <div class="col-auto ms-2">
+    <button class="btn btn-outline-light h-100 blurry-me" type="button" data-bs-toggle="modal" data-bs-target="#countryModal">
+      <span style="font-size: 1.25rem;"> <span class="fi fi-de fis"></span></span>
+      <i class="bi bi-chevron-right ms-1"></i>
+    </button>
+  </div>
+</form>
+<!-- Modal -->
+<div class="modal fade" id="countryModal" tabindex="2" aria-labelledby="countryModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down" style="max-height: 100vh;">
+    <div class="modal-content" style="max-height: 100vh;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="countryModal">Choose your country</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
+        <div class="row">
+          <% Movie::COUNTRIES.each do |country| %>
+            <div class="col-12 mb-2 country-btn-wrapper">
+              <button class="btn btn-outline-secondary w-100 country-btn" type="button" data-country="<%= country[:name] %>">
+                <span class="fi fi-<%= country[:code] %> fis"></span> <%= country[:name] %>
+              </button>
+            </div>
+          <% end %>
+          <!-- Add more countries as needed -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

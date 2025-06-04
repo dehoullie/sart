@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # Root
   root to: "movies#index"
 
+  # This route will return just the “results” partial
+  get "/movies/live_search", to: "movies#live_search", as: :live_search_movies
   # Movies
   resources :movies, only: [:index, :show]
 
@@ -27,4 +29,7 @@ Rails.application.routes.draw do
 
   # Health check for uptime monitor
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Genres Category Index
+  resources :genres, only: [:index]
 end
