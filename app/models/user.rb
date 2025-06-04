@@ -8,6 +8,6 @@ class User < ApplicationRecord
   has_many :favorite_movies, through: :favorites, source: :movie
 
 
-  validates :name, presence: true
+  # validates :name, presence: true
 
 end
