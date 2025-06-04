@@ -79,5 +79,5 @@ gem "cloudinary"
 
 gem "lucide-rails", "~> 0.5.1"
 
-gem "animate-rails"
+gem "geocoder"
 

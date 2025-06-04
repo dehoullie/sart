@@ -1,0 +1,19 @@
+  <div class="container-fluid py-3 ">
+    <div class="d-flex justify-content-between align-items-center px-3 pt-3">
+      <h5>Genres</h5>
+      <button class="btn btn-sm btn-outline-light">See more</button>
+    </div>
+    <div class="d-flex overflow-auto px-3 py-2">
+      <% @top_genres.each do |genre| %>
+      <%# Link to genres path with param %>
+      <%# Use the genre name as the link text %>
+        <%= link_to genres_path(genre: genre.name) do %>
+          <div class="card me-3 shadow-sm" style="min-width: 8rem; max-width: 8rem;">
+            <div class="card-body text-center py-5">
+              <span><strong><%= genre.name %></strong></span>
+            </div>
+          </div>
+        <%end%>
+      <%end%>
+    </div>
+  </div>
