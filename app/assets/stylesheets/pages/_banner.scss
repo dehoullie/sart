@@ -1,0 +1,32 @@
+.banner-form {
+  top: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  color: #ffffff;
+
+  // Make inputs inside forms font color white
+  input {
+    color: #ffffff;
+  }
+  // Make the placeholder text color white
+  input::placeholder {
+    color: #ffffff;
+  }
+  // Make the button text color white
+  button {
+    color: #ffffff;
+  }
+  // make focused input text color white and remove background and remove blue border
+  input:focus {
+    background: none;
+    color: #ffffff;
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+}
+.blurry-me {
+  background: rgba($color: #000000, $alpha: .5);
+  backdrop-filter: blur(10px);
+}

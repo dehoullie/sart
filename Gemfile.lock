@@ -88,6 +88,8 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    animate-rails (1.0.10)
+      rails
     autoprefixer-rails (10.4.21.0)
       execjs (~> 2)
     base64 (0.3.0)
@@ -176,6 +178,8 @@ GEM
     loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    lucide-rails (0.5.1)
+      railties (>= 4.1.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -343,6 +347,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  animate-rails
   autoprefixer-rails
   bootsnap
   bootstrap (~> 5.2)
@@ -354,6 +359,7 @@ DEPENDENCIES
   font-awesome-sass (~> 6.1)
   importmap-rails
   jbuilder
+  lucide-rails (~> 0.5.1)
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)

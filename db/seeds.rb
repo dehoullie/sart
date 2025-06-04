@@ -107,7 +107,8 @@ movies_data.each do |movie_data|
     title:        details["title"],
     overview:     details["overview"],
     release_date: details["release_date"],
-    runtime:      details["runtime"]
+    runtime:      details["runtime"],
+    popularity:   details["popularity"]
   )
 
   # 1c) Link genres to the new Movie:
@@ -144,24 +145,25 @@ movies_data.each do |movie_data|
     character_inserted += 1
   end
 
-  # 1e) Attach the backdrop image to this movie via Active Storage:
-  #     • TMDB only gives us a “backdrop_path” string (e.g. "/kXfq...jpg")
-  #     • Full URL: "https://image.tmdb.org/t/p/original#{backdrop_path}"
-  #     • We open that URL and hand it to Active Storage. Because
-  #       config.active_storage.service = :cloudinary and storage.yml
-  #       has folder: 'sart', Cloudinary will upload it under /sart/.
+  # 1e) Attach poster image via Active Storage
+  if details["poster_path"].present?
+    poster_url = "https://image.tmdb.org/t/p/original#{details['poster_path']}"
+    poster_io  = URI.open(poster_url)
+    movie.poster.attach(
+      io:           poster_io,
+      filename:     "#{movie.api_movie_id}_poster.jpg",
+      content_type: poster_io.content_type
+    )
+  end
+
+  # 1f) Attach backdrop image via Active Storage
   if details["backdrop_path"].present?
     backdrop_url = "https://image.tmdb.org/t/p/original#{details['backdrop_path']}"
-
-    # Use URI.open to fetch the remote image; give it a sensible filename
-    file_io = URI.open(backdrop_url)
-
-    # Attach to the “poster” (or however you named your attachment on Movie)
-    # (Assuming Movie model has: "has_one_attached :poster")
-    movie.poster.attach(
-      io:           file_io,
+    backdrop_io  = URI.open(backdrop_url)
+    movie.backdrop.attach(
+      io:           backdrop_io,
       filename:     "#{movie.api_movie_id}_backdrop.jpg",
-      content_type: file_io.content_type
+      content_type: backdrop_io.content_type
     )
   end
 
