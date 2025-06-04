@@ -8,5 +8,4 @@ class User < ApplicationRecord
   has_many :favorite_movies, through: :favorites, source: :movie
 
   validates :name, presence: true
-  validates :country, presence: true, length: { is: 2 } # ISO code
 end

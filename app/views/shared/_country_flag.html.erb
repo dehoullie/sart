@@ -1,0 +1,8 @@
+
+<turbo-frame id="country_flag">
+  <% if country_code.present? %>
+    <span class="fi fi-<%= country_code %>"></span>
+  <% else %>
+    <i class="bi bi-geo-alt"></i>
+  <% end %>
+</turbo-frame>

@@ -32,4 +32,7 @@ Rails.application.routes.draw do
 
   # Genres Category Index
   resources :genres, only: [:index]
+
+  # Set country
+  post "/set_country", to: "countries#set"
 end
