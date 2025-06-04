@@ -1,2 +1,170 @@
-<h1>Casts#index</h1>
-<p>Find me in app/views/casts/index.html.erb</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Show Page Layout</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5; /* Light gray background, matching Figma */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Adjusted main container for responsiveness:
+       - 'container mx-auto' provides a responsive max-width and centers the content.
+       - 'px-4 sm:px-6 lg:px-8' adds responsive horizontal padding. -->
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-lg shadow-lg overflow-hidden my-8">
+    <!-- Movie Header Section -->
+    <!-- Adjusted height for responsiveness: h-64 for small, h-80 for medium, h-96 for large screens -->
+    <div class="relative w-full h-64 sm:h-80 lg:h-96 bg-gray-300 flex items-end justify-start p-6 rounded-t-lg overflow-hidden">
+      <!-- Placeholder for Movie Poster/Background Image -->
+      <!-- Placeholder image dimensions adjusted to be flexible for various screen sizes -->
+      <img src="https://placehold.co/1200x384/A0A0A0/FFFFFF?text=Movie+Banner" alt="Movie Banner Placeholder" class="absolute inset-0 w-full h-full object-cover opacity-70">
+      <div class="relative z-10 text-white pb-4 w-full">
+        <!-- Flex container to align title/tags left and runtime/director right -->
+        <div class="flex justify-between items-end">
+          <!-- Left side: Title and Tags -->
+          <div>
+            <h1 class="text-4xl font-extrabold drop-shadow-lg">
+              Thunderbolts (2025)
+            </h1>
+            <div class="flex items-center space-x-2 mt-2 text-lg font-medium">
+              <span class="bg-purple-600 text-white px-2.5 py-0.5 rounded-full text-sm font-semibold">Action</span>
+              <span class="bg-blue-600 text-white px-2.5 py-0.5 rounded-full text-sm font-semibold">Science Fiction</span>
+              <span class="bg-green-600 text-white px-2.5 py-0.5 rounded-full text-sm font-semibold">Adventure</span>
+            </div>
+          </div>
+          <!-- Right side: Runtime and Director, aligned to the right -->
+          <div class="text-right">
+            <span class="text-base font-normal block">2h 7m</span>
+            <p class="text-lg mt-2 font-normal">Jake Schreier <span class="font-semibold">Director</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overview Section -->
+    <div class="p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Overview</h2>
+      <p class="text-gray-700 leading-relaxed text-base">
+        After finding themselves ensnared in a death trap, seven disillusioned cast-offs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.
+      </p>
+    </div>
+
+    <!-- Where to Watch Section -->
+    <div class="p-6 border-t border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Where to watch</h2>
+      <div class="flex flex-col space-y-4">
+        <!-- Flatrate -->
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-gray-700">Flatrate</h3>
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center w-10 h-10 bg-red-600 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">N</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-blue-600 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">H</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-purple-600 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">P</div>
+            <span class="text-gray-500 text-xl font-bold">+</span>
+          </div>
+        </div>
+        <!-- Rent -->
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-gray-700">Rent</h3>
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center w-10 h-10 bg-orange-500 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">G</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-green-600 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">Y</div>
+            <span class="text-gray-500 text-xl font-bold">+</span>
+          </div>
+        </div>
+        <!-- Buy Section -->
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-gray-700">Buy</h3>
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center w-10 h-10 bg-black text-white text-base font-bold rounded-md shadow-sm border border-gray-300">A</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-red-800 text-white text-base font-bold rounded-md shadow-sm border border-gray-300">V</div>
+            <span class="text-gray-500 text-xl font-bold">+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Cast Section -->
+    <div class="p-6 border-t border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Top cast</h2>
+      <div class="grid grid-cols-2 gap-x-4 gap-y-6">
+        <!-- Placeholder cast members -->
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">Florence Pugh</p>
+            <p class="text-sm text-gray-600">Yelena Belova</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">Sebastian Stan</p>
+            <p class="text-sm text-gray-600">Bucky Barnes</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">Julia Louis-Dreyfus</p>
+            <p class="text-sm text-gray-600">Valentina Allegra de Fontaine</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">Lewis Pullman</p>
+            <p class="text-sm text-gray-600">Sentry</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">David Harbour</p>
+            <p class="text-sm text-gray-600">Alexei Shostakov</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/56x56/D0D0D0/666666?text=Cast" alt="Cast Member Placeholder" class="rounded-full w-14 h-14 object-cover shadow-sm">
+          <div>
+            <p class="font-semibold text-gray-800 text-base">Wyatt Russell</p>
+            <p class="text-sm text-gray-600">John Walker</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Similar Movies Section -->
+    <div class="p-6 border-t border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Similar movies</h2>
+      <!-- Changed to flexbox for horizontal scrolling -->
+      <div class="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
+        <!-- Placeholder for similar movie posters -->
+        <!-- Added flex-shrink-0 and fixed width for slide effect -->
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+1" alt="Similar Movie 1" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+2" alt="Similar Movie 2" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+3" alt="Similar Movie 3" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+4" alt="Similar Movie 4" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+5" alt="Similar Movie 5" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+6" alt="Similar Movie 6" class="rounded-lg shadow-md flex-shrink-0 w-32">
+      </div>
+    </div>
+
+    <!-- Footer/Disclaimer -->
+    <div class="text-center mt-6 pt-4 border-t border-gray-200 text-gray-500 text-xs p-4">
+      <p>This is a movie show page. Content will be dynamically loaded here.</p>
+      <p>Designed for easy review by Team A.</p>
+    </div>
+  </div>
+
+</body>
+</html>
