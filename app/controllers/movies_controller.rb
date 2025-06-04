@@ -20,7 +20,7 @@ class MoviesController < ApplicationController
     else
       # No search term: render the full index (banner + home-content) as normal
       @movies       = Movie.limit(3)                            # for banner & home-content
-      @last_three = Movie.all.sample(3) if Movie.count > 3 # for banner
+      @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3 # for banner
       # Get a list of 5 genres with most count movies
       @top_genres   = Genre
         .left_joins(:movies)

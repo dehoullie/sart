@@ -16,7 +16,8 @@ export default class extends Controller {
     }
     if (event.key === "Backspace" || event.key === "Delete") {
       if (event.target.value.length == 0) {
-      this.element.requestSubmit();
+        this.onCancelClick(event);
+        return;
      }
     }
     if (event.target.value.length < 3) {
@@ -28,6 +29,7 @@ export default class extends Controller {
       this.element.querySelector("input[type='search']").classList.add("border-end-0");
       this.cancelButtonTarget.classList.remove("d-none");
       this.element.requestSubmit();
+      this.backButtonTarget.classList.remove("d-none");
     }
   }
   onCancelClick(event) {
@@ -39,5 +41,17 @@ export default class extends Controller {
 
     this.element.querySelector("input[type='search']").classList.remove("border-end-0");
     this.element.requestSubmit();
+  }
+
+  onBackClick(event) {
+    event.preventDefault();
+    // clear the input field this controller itself
+    this.element.querySelector("input[type='search']").value = "";
+    // hide the cancel button
+    this.cancelButtonTarget.classList.add("d-none");
+
+    this.element.querySelector("input[type='search']").classList.remove("border-end-0");
+    // go back to the previous page
+    window.history.back();
   }
 }
