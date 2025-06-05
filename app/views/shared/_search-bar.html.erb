@@ -55,8 +55,11 @@
         <div class="row">
           <% Movie::COUNTRIES.each do |country| %>
             <div class="col-12 mb-2 country-btn-wrapper">
-              <%= form_with url: set_country_path, method: :post, data: { turbo_frame: "country_flag" } do |f| %>
+              <%= form_with url: set_country_path, method: :post do |f| %>
                 <%= f.hidden_field :country_code, value: country[:code] %>
+                <% if defined?(@movie) && @movie.present? %>
+                  <%= f.hidden_field :movie_id, value: @movie.id %>
+                <% end %>
                 <button type="submit"
                         class="btn btn-outline-secondary w-100 country-btn text-white"
                         data-bs-dismiss="modal">

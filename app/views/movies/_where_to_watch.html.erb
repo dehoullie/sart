@@ -1,0 +1,61 @@
+<turbo-frame id="where_to_watch">
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-12">
+      <h4 class="fw-bold mb-4">Where to Watch</h4>
+
+        <div class="list-group">
+          <!-- Flatrate, Rent, Buy -->
+          <% if @providers[:flatrate].any? %>
+            <div class="list-group-item py-3">
+              <h5 class="fw-semibold mb-2">Flatrate</h5>
+              <div class="d-flex flex-wrap align-items-center">
+                <% @providers[:flatrate].each do |prov| %>
+                  <img src="<%= prov[:logo_url] %>"
+                       alt="<%= prov[:name] %>"
+                       class="provider-logo m-2" />
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if @providers[:rent].any? %>
+            <div class="list-group-item py-3">
+              <h5 class="fw-semibold mb-2">Rent</h5>
+              <div class="d-flex flex-wrap align-items-center">
+                <% @providers[:rent].each do |prov| %>
+                  <img src="<%= prov[:logo_url] %>"
+                       alt="<%= prov[:name] %>"
+                       class="provider-logo m-2" />
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if @providers[:buy].any? %>
+            <div class="list-group-item py-3">
+              <h5 class="fw-semibold mb-2">Buy</h5>
+              <div class="d-flex flex-wrap align-items-center">
+                <% @providers[:buy].each do |prov| %>
+                  <img src="<%= prov[:logo_url] %>"
+                       alt="<%= prov[:name] %>"
+                       class="provider-logo m-2" />
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% if @providers[:link].present? %>
+          <div class="mt-3 d-none">
+            <a href="<%= @providers[:link] %>" target="_blank" rel="noopener">
+              View all providers on TMDB
+            </a>
+          </div>
+        <% end %>
+
+    </div>
+  </div>
+</div>
+
+</turbo-frame>

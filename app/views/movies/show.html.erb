@@ -1,2 +1,93 @@
-<h1>Movies#show</h1>
-<p>Find me in app/views/movies/show.html.erb</p>
+  <div class="">
+
+    <!-- Movie Header Section -->
+    <div class="position-relative movie-header mb-5">
+  <!-- 1) BACKDROP IMAGE -->
+  <div
+    class="w-100"
+    style="
+      height: 50vh;
+      background-size: cover;
+      background-position: center center;
+      background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= @movie.backdrop.url %>);
+    ">
+    <!-- 2) DARK OVERLAY GRADIENT -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 header-gradient"></div>
+
+    <!-- 3) TEXT CONTAINER -->
+    <div class="position-absolute bottom-0 start-0 w-100 text-white py-3 px-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-md-8">
+            <!-- Movie Title + Year -->
+            <h3 class="mb-1">
+              <%= @movie.title %>
+              <small class="fs-4 text-light">(<%= @movie.release_date.strftime("%Y") %>)</small>
+            </h3>
+
+            <!-- Duration + Genre Badges -->
+            <div class="d-flex align-items-center mb-2">
+              <small class="me-3 fst-italic">
+                <% hours = @movie.runtime / 60 %>
+                <% mins  = @movie.runtime % 60 %>
+                <%= "#{hours}h #{mins}min" %>
+              </small>
+              <div>
+                <% @movie.genres.each do |g| %>
+                  <span class="badge rounded-pill text-bg-dark me-1">
+                    <%= g.name %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Director -->
+            <p class="text-white">
+              <small>Directed by <strong><%= @movie.directors[0].name %></strong></small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%#========================%>
+<%#   OVERVIEW SECTION      %>
+<%#========================%>
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-12">
+      <h4 class="fw-bold">Overview</h4>
+      <p class="text-muted">
+        <%= @movie.overview %>
+      </p>
+    </div>
+  </div>
+</div>
+<%#===========================%>
+<%#  WHERE TO WATCH SECTION    %>
+<%#===========================%>
+<!-- filepath: app/views/movies/show.html.erb -->
+<%= render "movies/where_to_watch", movie: @movie, providers: @providers %>
+<%#=====================%>
+<%#  TOP CAST SECTION    %>
+<%#=====================%>
+<%= render partial: "cast", locals: { cast: @cast } %>
+
+    <!-- Similar Movies Section -->
+    <div class="p-6 border-t border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Similar movies</h2>
+      <!-- Changed to flexbox for horizontal scrolling -->
+      <div class="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
+        <!-- Placeholder for similar movie posters -->
+        <!-- Added flex-shrink-0 and fixed width for slide effect -->
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+1" alt="Similar Movie 1" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+2" alt="Similar Movie 2" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+3" alt="Similar Movie 3" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+4" alt="Similar Movie 4" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+5" alt="Similar Movie 5" class="rounded-lg shadow-md flex-shrink-0 w-32">
+        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+6" alt="Similar Movie 6" class="rounded-lg shadow-md flex-shrink-0 w-32">
+      </div>
+    </div>
