@@ -11,6 +11,9 @@ class Movie < ApplicationRecord
   has_one_attached :poster
   has_one_attached :backdrop
 
+  has_many :movie_directors, dependent: :destroy
+  has_many :directors, through: :movie_directors
+
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },

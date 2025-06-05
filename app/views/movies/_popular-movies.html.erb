@@ -3,9 +3,14 @@
     <h5 class="px-3 pt-3">Popular movies</h5>
     <div class="d-flex overflow-auto px-3 pb-3">
       <% @popular_movies.each do |movie| %>
+        <%# link to movie %>
+        <%= link_to movie_path(movie),
+            data: { turbo_frame: '_top' },
+            class: "text-decoration-none text-reset" do %>
         <div class="card me-3 shadow-sm" style="min-width: 8rem; max-width: 8rem;">
           <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
         </div>
+        <% end %>
       <% end %>
     </div>
   </div>

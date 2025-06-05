@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_04_082900) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_05_101754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_04_082900) do
     t.index ["movie_id"], name: "index_characters_on_movie_id"
   end
 
+  create_table "directors", force: :cascade do |t|
+    t.string "name"
+    t.integer "api_cast_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_cast_id"], name: "index_directors_on_api_cast_id", unique: true
+  end
+
   create_table "favorites", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "movie_id", null: false
@@ -81,6 +89,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_04_082900) do
     t.integer "api_genre_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "movie_directors", force: :cascade do |t|
+    t.bigint "movie_id", null: false
+    t.bigint "director_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["director_id"], name: "index_movie_directors_on_director_id"
+    t.index ["movie_id"], name: "index_movie_directors_on_movie_id"
   end
 
   create_table "movies", force: :cascade do |t|
@@ -123,6 +140,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_04_082900) do
   add_foreign_key "characters", "movies"
   add_foreign_key "favorites", "movies"
   add_foreign_key "favorites", "users"
+  add_foreign_key "movie_directors", "directors"
+  add_foreign_key "movie_directors", "movies"
   add_foreign_key "movies_genres", "genres"
   add_foreign_key "movies_genres", "movies"
 end

@@ -37,5 +37,29 @@ class MoviesController < ApplicationController
     end
   end
 
+  def show
+    @movie = Movie.find(params[:id])
+    @cast = @movie.casts.includes(:characters)
+    @genres = @movie.genres
+    @is_favorite = current_user.favorites.exists?(movie_id: @movie.id) if user_signed_in?
+    # Now I'm gonna call the MovieProvidersFetcher service to get watch providers
+    country = session[:country_code] || "us"
+
+    result_hash       = MovieProvidersFetcher.new(
+                          tmdb_id:      @movie.api_movie_id,
+                          country_code: country
+                        ).call
+
+    # Se o hash vier “vazio” mesmo para os três arrays:
+    if result_hash.values_at(:flatrate, :rent, :buy).all?(&:empty?)
+      # Fallback para “US” (ou outro país genérico)
+      result_hash = MovieProvidersFetcher.new(
+                      tmdb_id:      @movie.api_movie_id,
+                      country_code: "us"
+                    ).call
+    end
+
+    @providers = result_hash
+  end
   # other actions (show, etc.) remain unchanged
 end

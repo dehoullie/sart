@@ -1,0 +1,30 @@
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-12">
+      <h4 class="fw-bold mb-4">Top Cast</h4>
+      <div class="row g-4">
+        <%# Show up to 10 actors, two per row on md+ screens %>
+        <% @cast.each do |actor| %>
+          <% character = actor.characters.find_by(movie: @movie) %>
+          <div class="col-6 col-md-6">
+            <div class="d-flex align-items-start">
+              <%# Actor image, fixed width 25% of the column %>
+              <div style="width: 25%; flex-shrink: 0;">
+                <%= image_tag(
+                      'https://placehold.co/300x300',
+                      alt: actor.name,
+                      class: "img-fluid rounded"
+                    ) %>
+              </div>
+              <%# Name and character, with left margin %>
+              <div class="ms-3">
+                <h6 class="fw-bold mb-1"><%= actor.name %></h6>
+                <small class="text-muted"><%= character&.character_name %></small>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
