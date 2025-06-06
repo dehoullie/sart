@@ -1,7 +1,8 @@
-  <div class="container-fluid py-3 ">
+
+<div class="container-fluid py-3 ">
     <div class="d-flex justify-content-between align-items-center px-3 pt-3">
       <h5>Genres</h5>
-      <button class="btn btn-sm btn-outline-light">See more</button>
+      <%= link_to "All genres", genres_path , class: "btn btn-sm btn-outline-light", data: { turbo_frame: '_top' } %>
     </div>
     <div class="d-flex overflow-auto px-3 py-2">
       <% @top_genres.each do |genre| %>

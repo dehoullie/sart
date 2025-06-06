@@ -19,7 +19,7 @@ class MoviesController < ApplicationController
       render partial: "shared/results", locals: { movies: @movies }
     else
       # No search term: render the full index (banner + home-content) as normal
-      @movies       = Movie.limit(3)                            # for banner & home-content
+      @movies     = Movie.limit(3)                            # for banner & home-content
       @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3 # for banner
       # Get a list of 5 genres with most count movies
       @top_genres   = Genre
@@ -42,6 +42,8 @@ class MoviesController < ApplicationController
     @cast = @movie.casts.includes(:characters)
     @genres = @movie.genres
     @is_favorite = current_user.favorites.exists?(movie_id: @movie.id) if user_signed_in?
+    # Similar movies list by genre / category
+
     # Now I'm gonna call the MovieProvidersFetcher service to get watch providers
     country = session[:country_code] || "us"
 
@@ -50,9 +52,8 @@ class MoviesController < ApplicationController
                           country_code: country
                         ).call
 
-    # Se o hash vier “vazio” mesmo para os três arrays:
     if result_hash.values_at(:flatrate, :rent, :buy).all?(&:empty?)
-      # Fallback para “US” (ou outro país genérico)
+
       result_hash = MovieProvidersFetcher.new(
                       tmdb_id:      @movie.api_movie_id,
                       country_code: "us"
@@ -60,6 +61,16 @@ class MoviesController < ApplicationController
     end
 
     @providers = result_hash
+
+    # SIMILAR MOVIES: find other movies that share at least one genre with current movie
+    genre_ids = @genres.pluck(:id)
+    @similar_movies = Movie
+      .joins(:genres)
+      .where(genres: { id: genre_ids })
+      .where.not(id: @movie.id)
+      .distinct
+      .order(popularity: :desc)
+      .limit(10)
   end
   # other actions (show, etc.) remain unchanged
 end

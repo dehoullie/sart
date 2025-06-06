@@ -10,11 +10,17 @@
             <div class="d-flex align-items-start">
               <%# Actor image, fixed width 25% of the column %>
               <div style="width: 25%; flex-shrink: 0;">
-                <%= image_tag(
-                      'https://placehold.co/300x300',
-                      alt: actor.name,
-                      class: "img-fluid rounded"
-                    ) %>
+                <% if actor.photo.attached? %>
+                  <img src="<%= actor.photo.url %>" class="img-fluid rounded">
+                <% else %>
+                  <%# Compute initials: take first letters of each word in name %>
+                  <% initials = actor.name.split.map { |part| part[0] }.join.upcase %>
+                  <div
+                    class="d-flex align-items-center justify-content-center rounded"
+                    style="background-color: #cccccc; width: 100%; padding-top: 100%; position: relative;">
+                    <span class="initials"><%= initials %></span>
+                  </div>
+                <% end %>
               </div>
               <%# Name and character, with left margin %>
               <div class="ms-3">
