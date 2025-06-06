@@ -1,14 +1,34 @@
- <div class="container-fluid py-3 mb-5">
-    <h5 class="px-3 pt-3"> <%= title%></h5>
-    <div class="d-flex overflow-auto px-3 pb-3">
-      <% movie_list.each do |movie| %>
-        <%= link_to movie_path(movie),
-            data: { turbo_frame: '_top' },
-            class: "text-decoration-none text-reset" do %>
-        <div class="card me-3 shadow-sm" style="min-width: 8rem; max-width: 8rem;">
-          <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
+<%# app/views/shared/_movie_list.html.erb %>
+<%#
+  This partial expects the following local variables:
+  - movie_list: An array of movie objects to display.
+  - title: An optional section title (e.g., 'Filmography', 'Similar Movies').
+%>
+
+<div class="container-fluid py-3 mb-5">
+  <% if local_assigns[:title].present? %>
+    <h5 class="px-3 pt-3"> <%= title %></h5>
+  <% end %>
+  <div class="d-flex overflow-auto px-3 pb-3">
+    <% movie_list.each do |movie| %>
+      <%= link_to movie_path(movie),
+          data: { turbo_frame: '_top' },
+          class: "text-decoration-none text-reset me-3" do %> <%# Added me-3 for spacing between cards %>
+        <div class="card shadow-sm bg-transparent border-0 text-white" style="min-width: 8rem; max-width: 8rem;">
+          <% if movie.poster.attached? && movie.poster.key.present? %>
+            <%= cl_image_tag movie.poster.key, class: "card-img-top rounded", alt: movie.title, width: 128, height: 192, crop: :fill %> <%# Added rounded corners and fixed dimensions for consistency %>
+          <% else %>
+            <%# Placeholder if no poster is available (using a generic URL for now) %>
+            <%= image_tag "https://via.placeholder.com/128x192/343a40/ffffff?text=No+Poster", class: "card-img-top rounded", alt: movie.title %>
+          <% end %>
+          <div class="card-body p-0 pt-2 text-center"> <%# Added text-center for title/year %>
+            <h6 class="card-title fw-bold mb-0 small"><%= movie.title %></h6>
+            <% if movie.release_date.present? %>
+              <p class="card-text text-muted small"><%= movie.release_date.strftime("%Y") %></p>
+            <% end %>
+          </div>
         </div>
-        <% end %>
-        <% end %>
-    </div>
+      <% end %>
+    <% end %>
   </div>
+</div>

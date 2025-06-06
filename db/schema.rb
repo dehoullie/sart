@@ -97,6 +97,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_05_101754) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["director_id"], name: "index_movie_directors_on_director_id"
+    t.index ["movie_id", "director_id"], name: "index_movie_directors_on_movie_id_and_director_id", unique: true
     t.index ["movie_id"], name: "index_movie_directors_on_movie_id"
   end
 

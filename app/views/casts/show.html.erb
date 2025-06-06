@@ -1,2 +1,55 @@
-<h1>Casts#show</h1>
-<p>Find me in app/views/casts/show.html.erb</p>
+<%# app/views/casts/show.html.erb %>
+
+<div class="container my-5 py-4">
+
+  <%# Director's Profile Header - Full Width, Centered and Prominent %>
+  <div class="row mb-4"> <%# Reduced bottom margin slightly to make space for the divider %>
+    <div class="col-12 d-flex flex-column align-items-center text-center">
+      <div class="p-4 border rounded shadow-lg bg-dark text-white">
+        <% if @director.profile_picture.attached? %>
+          <%= image_tag @director.profile_picture.url, class: "img-fluid rounded-circle mb-3 border border-4 border-light", style: "width: 250px; height: 250px; object-fit: cover;" %>
+        <% else %>
+          <%= image_tag "https://ui-avatars.com/api/?name=#{ERB::Util.url_encode(@director.name)}&background=random&color=fff&size=250", class: "img-fluid rounded-circle mb-3 border border-4 border-light", style: "width: 250px; height: 250px; object-fit: cover;" %>
+        <% end %>
+        <h1 class="fw-bold mb-2 display-4"><%= @director.name %></h1>
+
+        <%# NEW: Add a static descriptive text/tagline below the name %>
+        <p class="lead text-muted mb-3">Visionary filmmaker. Master storyteller.</p> <%# Using Bootstrap's 'lead' class for larger text and 'text-muted' for a softer color %>
+
+        <%# Placeholder for Birth Date - Keep commented out unless 'birth_date' is added to Director model %>
+        <%# if @director.birth_date.present? %>
+        <%#   <p class="text-muted fs-5">Born: <%= @director.birth_date.strftime("%B %d, %Y") %></p>
+        <%# end %>
+      </div>
+    </div>
+  </div>
+
+  <%# NEW: A subtle horizontal divider to visually separate the header from the content below %>
+  <div class="row mb-5"> <%# mb-5 adds space below the divider %>
+    <div class="col-12">
+      <hr class="border-secondary my-0"> <%# A subtle, thin line (my-0 removes default top/bottom margin) %>
+    </div>
+  </div>
+
+  <%# Biography Section (Optional) - Full Width %>
+  <%# Keep commented out unless 'biography' is added to Director model %>
+  <%# if @director.biography.present? %>
+  <%#   <div class="row mb-5"> %>
+  <%#     <div class="col-12"> %>
+  <%#       <h4 class="fw-bold mb-3">Biography</h4> %>
+  <%#       <p class="text-muted"><%= @director.biography %></p> 
+  <%#     </div> %>
+  <%#   </div> %>
+  <%# end %>
+
+  <%# Filmography Section - Full Width %>
+  <div class="row">
+    <div class="col-12">
+      <% if @movies.any? %>
+        <%= render partial: "shared/movie_list", locals: { title: 'Filmography', movie_list: @movies } %>
+      <% else %>
+        <p class="text-muted mt-3 text-center">No movies found for this director yet.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
