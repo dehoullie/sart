@@ -1,5 +1,5 @@
-  <div class="">
-
+<turbo-frame id="movies_container">
+<div class="">
     <!-- Movie Header Section -->
     <div class="position-relative movie-header mb-5">
   <!-- 1) BACKDROP IMAGE -->
@@ -44,7 +44,16 @@
 
             <!-- Director -->
             <p class="text-white">
-              <small>Directed by <strong><%= @movie.directors[0].name %></strong></small>
+              <div class="d-flex align-items-center">
+                <small>
+                  Directed by <strong><%= @movie.directors[0].name %></strong>
+                </small>
+                <div class="ms-auto">
+                  <%= turbo_frame_tag "favorite_#{@movie.id}" do %>
+                    <%= render partial: "favorites/favorite", locals: { movie: @movie } %>
+                  <% end %>
+                </div>
+              </div>
             </p>
           </div>
         </div>
@@ -56,6 +65,8 @@
 <%#========================%>
 <%#   OVERVIEW SECTION      %>
 <%#========================%>
+
+
 <div class="container mb-5">
   <div class="row">
     <div class="col-12">
@@ -79,3 +90,4 @@
 <%#  Similar movies    %>
 <%#=====================%>
 <%= render partial: "shared/movie_list", locals: { title: 'Similar Movies', movie_list: @similar_movies } %>
+</turbo-frame>
