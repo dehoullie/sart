@@ -35,4 +35,6 @@ Rails.application.routes.draw do
 
   # Set country
   post "/set_country", to: "countries#set"
+
+  resources :questions, only: [:index, :create]
 end

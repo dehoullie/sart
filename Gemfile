@@ -78,3 +78,8 @@ end
 gem "cloudinary"
 
 gem "lucide-rails", "~> 0.5.1"
+
+gem "ruby-openai"
+gem "solid_cable", "~> 1.0.3"
+gem "solid_queue"
+gem 'neighbor'
