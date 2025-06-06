@@ -4,6 +4,6 @@
     <%= render partial: "banner", locals: { movies: @movies } %>
     <!-- Categories or “home‐content” -->
     <%= render partial: "genres", locals: { movies: @top_genres } %>
-    <%= render partial: "popular-movies", locals: { movies: @popular_movies } %>
+    <%= render partial: "shared/movie_list", locals: { title: 'Popular Movies', movie_list: @popular_movies } %>
   </div>
 </turbo-frame>

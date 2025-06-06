@@ -1,9 +1,7 @@
-
-  <div class="container-fluid py-3 mb-5">
-    <h5 class="px-3 pt-3">Popular movies</h5>
+ <div class="container-fluid py-3 mb-5">
+    <h5 class="px-3 pt-3"> <%= title%></h5>
     <div class="d-flex overflow-auto px-3 pb-3">
-      <% @popular_movies.each do |movie| %>
-        <%# link to movie %>
+      <% movie_list.each do |movie| %>
         <%= link_to movie_path(movie),
             data: { turbo_frame: '_top' },
             class: "text-decoration-none text-reset" do %>
@@ -11,6 +9,6 @@
           <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
         </div>
         <% end %>
-      <% end %>
+        <% end %>
     </div>
   </div>

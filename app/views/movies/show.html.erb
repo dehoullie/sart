@@ -75,19 +75,7 @@
 <%#  TOP CAST SECTION    %>
 <%#=====================%>
 <%= render partial: "cast", locals: { cast: @cast } %>
-
-    <!-- Similar Movies Section -->
-    <div class="p-6 border-t border-gray-200">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Similar movies</h2>
-      <!-- Changed to flexbox for horizontal scrolling -->
-      <div class="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
-        <!-- Placeholder for similar movie posters -->
-        <!-- Added flex-shrink-0 and fixed width for slide effect -->
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+1" alt="Similar Movie 1" class="rounded-lg shadow-md flex-shrink-0 w-32">
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+2" alt="Similar Movie 2" class="rounded-lg shadow-md flex-shrink-0 w-32">
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+3" alt="Similar Movie 3" class="rounded-lg shadow-md flex-shrink-0 w-32">
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+4" alt="Similar Movie 4" class="rounded-lg shadow-md flex-shrink-0 w-32">
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+5" alt="Similar Movie 5" class="rounded-lg shadow-md flex-shrink-0 w-32">
-        <img src="https://placehold.co/120x180/E0E0E0/333333?text=Movie+6" alt="Similar Movie 6" class="rounded-lg shadow-md flex-shrink-0 w-32">
-      </div>
-    </div>
+<%#=====================%>
+<%#  Similar movies    %>
+<%#=====================%>
+<%= render partial: "shared/movie_list", locals: { title: 'Similar Movies', movie_list: @similar_movies } %>
