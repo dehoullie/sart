@@ -1,0 +1,35 @@
+<div class="container push-search">
+  <% if @user.avatar.attached? %>
+    <div class="mb-3 text-center">
+      <%= cl_image_tag(
+            @user.avatar.key,
+            width: 200, height: 200,
+            alt:       @user.name,
+            class:     "rounded-circle mx-auto d-block border border-light border-2"
+          ) %>
+    </div>
+  <% end %>
+
+  <h1><%= @user.name.presence || "Your Profile" %></h1>
+
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <p><strong>Country:</strong>
+    <% if @user.country.present? %>
+      <span class="fi fi-<%= @user.country %>"></span>
+    <% else %>
+      <i class="bi bi-geo-alt"></i>
+    <% end %>
+  </p>
+
+  <%= link_to "Edit Profile", edit_profile_path,
+      class: "btn btn-outline-primary mt-3 w-100" %>
+</div>
+
+<div class="fixed-bottom text-center py-5 mb-5 container">
+  <%= link_to destroy_user_session_path,
+      method: :delete,
+      data: { turbo_confirm: "Are you sure you want to log out?" },
+      class: "btn btn-outline-danger w-100" do %>
+    <strong>Logout <%= lucide_icon('x') %></strong>
+  <% end %>
+</div>

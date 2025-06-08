@@ -3,10 +3,20 @@ require "json"
 
 class ApplicationController < ActionController::Base
   before_action :ensure_session_country
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
+  protected
+  def configure_permitted_parameters
+    added = [:name, :country, :avatar, :password, :password_confirmation, :current_password]
+    devise_parameter_sanitizer.permit(:account_update, keys: added)
+  end
   private
 
   def ensure_session_country
+    if user_signed_in? && current_user.country.present?
+      session[:country_code] = current_user.country.to_s.downcase
+      return
+    end
     return if session[:country_code].present?
 
     ip = request.remote_ip
