@@ -61,6 +61,7 @@ class MoviesController < ApplicationController
     end
 
     @providers = result_hash
+
     # Trying to get the links to the movies:
     # Attempt to get JustWatch deep-link offers
     # @watch_offers = JustwatchPartner.new(
