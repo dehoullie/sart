@@ -16,7 +16,7 @@
               data: { turbo_frame: '_top' },
               class: "text-decoration-none text-reset" do %>
               <div class="card flex-fill animate__animated" data-animate-results-target="card">
-                <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
+                <%= image_tag cloudinary_poster(movie), class: "card-img-top", alt: movie.title %>
                 <div class="card-body">
                   <h5 class="card-title"><%= movie.title %></h5>
                 </div>

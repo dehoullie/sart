@@ -1,27 +1,16 @@
-<div id="carouselLastEvents" class="carousel slide carousel-fade " data-bs-ride="carousel" data-bs-interval="8000" data-bs-pause="hover" style="height: 50vh; margin: 0 auto; position: relative;">
+<div id="carouselLastEvents" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="8000" data-bs-pause="hover" style="height: 50vh; margin: 0 auto; position: relative;">
   <div class="d-md-block tagline w-100">
     <h1><strong>s.art</strong></h1>
     <p>Every story, one search away...</p>
   </div>
+
   <div class="carousel-inner" style="height: 100%;">
-    <div class="carousel-item active d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[0].backdrop.key,
-          # Images should be centralized in the carousel
-          class: "d-block h-100 carousel-img",
-          alt: @last_three[0].title %>
-    </div>
-
-    <div class="carousel-item d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[1].backdrop.key,
-          class: "d-block h-100 carousel-img",
-          alt: @last_three[1].title %>
-    </div>
-
-    <div class="carousel-item d-flex justify-content-center align-items-center" style="height: 100%;">
-      <%= cl_image_tag @last_three[2].backdrop.key,
-          class: "d-block h-100 carousel-img",
-          alt: @last_three[2].title %>
-    </div>
-
+    <% @last_three.each_with_index do |movie, index| %>
+      <div class="carousel-item d-flex justify-content-center align-items-center <%= 'active' if index == 0 %>" style="height: 100%;">
+        <%= image_tag cloudinary_backdrop(movie),
+              class: "d-block h-100 carousel-img",
+              alt: movie.title %>
+      </div>
+    <% end %>
   </div>
 </div>
