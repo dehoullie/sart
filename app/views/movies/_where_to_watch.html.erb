@@ -1,61 +1,53 @@
 <turbo-frame id="where_to_watch">
-<div class="container mb-5">
-  <div class="row">
-    <div class="col-12">
-      <h4 class="fw-bold mb-4">Where to Watch</h4>
+  <div class="container mb-5">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="fw-bold mb-4">Where to Watch</h4>
 
+        <!-- TMDB provider logos -->
         <div class="list-group">
-          <!-- Flatrate, Rent, Buy -->
-          <% if @providers[:flatrate].any? %>
-            <div class="list-group-item py-3">
-              <h5 class="fw-semibold mb-2">Flatrate</h5>
-              <div class="d-flex flex-wrap align-items-center">
-                <% @providers[:flatrate].each do |prov| %>
-                  <img src="<%= prov[:logo_url] %>"
-                       alt="<%= prov[:name] %>"
-                       class="provider-logo m-2" />
-                <% end %>
+          <% [:flatrate, :rent, :buy].each do |type| %>
+            <% list = @providers[type] %>
+            <% if list.present? %>
+              <div class="list-group-item py-3">
+                <h5 class="fw-semibold mb-2"><%= type.capitalize %></h5>
+                <div class="d-flex flex-wrap align-items-center">
+                  <% list.each do |prov| %>
+                    <img src="<%= prov[:logo_url] %>"
+                         alt="<%= prov[:name] %>"
+                         class="provider-logo m-2" />
+                  <% end %>
+                </div>
               </div>
-            </div>
-          <% end %>
-
-          <% if @providers[:rent].any? %>
-            <div class="list-group-item py-3">
-              <h5 class="fw-semibold mb-2">Rent</h5>
-              <div class="d-flex flex-wrap align-items-center">
-                <% @providers[:rent].each do |prov| %>
-                  <img src="<%= prov[:logo_url] %>"
-                       alt="<%= prov[:name] %>"
-                       class="provider-logo m-2" />
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-
-          <% if @providers[:buy].any? %>
-            <div class="list-group-item py-3">
-              <h5 class="fw-semibold mb-2">Buy</h5>
-              <div class="d-flex flex-wrap align-items-center">
-                <% @providers[:buy].each do |prov| %>
-                  <img src="<%= prov[:logo_url] %>"
-                       alt="<%= prov[:name] %>"
-                       class="provider-logo m-2" />
-                <% end %>
-              </div>
-            </div>
+            <% end %>
           <% end %>
         </div>
 
-        <% if @providers[:link].present? %>
-          <div class="mt-3 d-none">
-            <a href="<%= @providers[:link] %>" target="_blank" rel="noopener">
-              View all providers on TMDB
-            </a>
+        <!-- Direct streaming links via JustWatch -->
+        <% if @watch_offers.present? %>
+          <div class="mt-3">
+            <h5 class="fw-semibold mb-2">Watch Now</h5>
+            <div class="d-flex flex-wrap">
+              <% @watch_offers.each do |offer| %>
+                <a href="<%= offer[:url] %>"
+                   target="_blank" rel="noopener"
+                   class="btn btn-outline-secondary m-1">
+                  <%= offer[:monetization].capitalize %>
+                  on <%= offer[:provider_name] %>
+                </a>
+              <% end %>
+            </div>
           </div>
+        <% else %>
+          <% if @providers[:link].present? %>
+            <div class="mt-3">
+              <a href="<%= @providers[:link] %>" target="_blank" rel="noopener">
+                View all providers on TMDb
+              </a>
+            </div>
+          <% end %>
         <% end %>
-
+      </div>
     </div>
   </div>
-</div>
-
 </turbo-frame>

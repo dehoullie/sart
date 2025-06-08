@@ -61,7 +61,12 @@ class MoviesController < ApplicationController
     end
 
     @providers = result_hash
-
+    # Trying to get the links to the movies:
+    # Attempt to get JustWatch deep-link offers
+    # @watch_offers = JustwatchPartner.new(
+    #   tmdb_id: @movie.api_movie_id,
+    #   country: session[:country_code] || 'US'
+    # ).offers_with_urls
     # SIMILAR MOVIES: find other movies that share at least one genre with current movie
     genre_ids = @genres.pluck(:id)
     @similar_movies = Movie
