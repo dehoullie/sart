@@ -11,7 +11,7 @@
               <%# Actor image, fixed width 25% of the column %>
               <div style="width: 25%; flex-shrink: 0;">
                 <% if actor.photo.attached? %>
-                  <img src="<%= actor.photo.url %>" class="img-fluid rounded">
+                <%= image_tag cloudinary_cast_photo(actor), alt: actor.name, class: "img-fluid rounded" %>
                 <% else %>
                   <%# Compute initials: take first letters of each word in name %>
                   <% initials = actor.name.split.map { |part| part[0] }.join.upcase %>

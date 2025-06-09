@@ -1,4 +1,4 @@
-module ApplicationHelper
+module CloudinaryHelper
   def cloudinary_poster(movie)
     "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
   end

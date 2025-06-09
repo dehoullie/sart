@@ -78,3 +78,9 @@ end
 gem "cloudinary"
 
 gem "lucide-rails", "~> 0.5.1"
+
+gem "geocoder"
+
+gem 'httparty'
+
+gem 'nokogiri'
