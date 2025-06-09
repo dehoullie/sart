@@ -17,20 +17,6 @@ class Movie < ApplicationRecord
   has_neighbors :embedding
   after_create :set_embedding
 
-    private
-
-  def set_embedding
-    client = OpenAI::Client.new
-    response = client.embeddings(
-      parameters: {
-        model: 'text-embedding-3-small',
-        input: "Movie: #{name}. Description: #{description}"
-      }
-    )
-    embedding = response['data'][0]['embedding']
-    update(embedding: embedding)
-  end
-
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },
@@ -83,4 +69,22 @@ class Movie < ApplicationRecord
             { code: 'pe', name: 'Peru' },
             { code: 've', name: 'Venezuela' }
           ]
+
+  def self.set_all_embeddings
+    Movie.all.each do |movie|
+      movie.set_embedding
+    end
+  end
+
+  def set_embedding
+    client = OpenAI::Client.new
+    response = client.embeddings(
+      parameters: {
+        model: 'text-embedding-3-small',
+        input: "Movie title: #{title}. Movie overview: #{overview}"
+      }
+    )
+    embedding = response['data'][0]['embedding']
+    update!(embedding: embedding)
+  end
 end
