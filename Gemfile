@@ -84,3 +84,7 @@ gem "geocoder"
 gem 'httparty'
 
 gem 'nokogiri'
+
+gem "solid_queue"
+
+gem "solid_cable"

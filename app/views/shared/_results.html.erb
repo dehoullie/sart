@@ -1,33 +1,24 @@
+<%# app/views/shared/_results.html.erb %>
+<%= turbo_stream_from "search_results_#{params[:query]}" %>
+<%= turbo_frame_tag "genre_results" do %>
+
 <%= turbo_frame_tag :movies_container do %>
-  <%= turbo_frame_tag :genre_results do %>
-  <%if @genre.present?%>
-    <div class="container results-container">
-      <h2><%= @genre.name%></h2>
-    </div>
-    <%else%>
-      <div class="push-search"></div>
-  <%end%>
-    <% if @movies.any? %>
-      <div class="container px-3 pb-3 bottom-push" data-controller="animate-results">
-        <div class="row g-3">
-          <% @movies.each do |movie| %>
-            <div class="col-6 d-flex" >
-            <%= link_to movie_path(movie),
-              data: { turbo_frame: '_top' },
-              class: "text-decoration-none text-reset" do %>
-              <div class="card flex-fill animate__animated" data-animate-results-target="card">
-                <%= image_tag cloudinary_poster(movie), class: "card-img-top", alt: movie.title %>
-                <div class="card-body">
-                  <h5 class="card-title"><%= movie.title %></h5>
-                </div>
-              </div>
-            <% end %>
-            </div>
-          <% end %>
+  <div class="container px-3 pb-3 bottom-push push-search ">
+    <div class="row g-3" id="results_list">
+      <% @movies.each do |movie| %>
+        <%= render partial: "shared/movie_card", locals: { movie: movie } %>
+      <% end %>
+
+      <%#— fill up to 3 with skeletons —%>
+      <% threshold = 3
+         missing   = [threshold - @movies.size, 0].max
+      %>
+      <% missing.times do %>
+        <div class="col-6 d-flex">
+          <div class="card flex-fill skeleton-card"></div>
         </div>
-      </div>
-    <% else %>
-      <div class="px-3 pb-3 text-muted">No movies found.</div>
-    <% end %>
-  <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 <% end %>
