@@ -7,7 +7,7 @@
         <% @cast.each do |actor| %>
           <% character = actor.characters.find_by(movie: @movie) %>
           <div class="col-6 col-md-6">
-            <div class="d-flex align-items-start">
+            <%= link_to cast_path(actor), data: { turbo_frame: '_top' }, class: "d-flex align-items-start text-decoration-none text-reset" do %>
               <%# Actor image, fixed width 25% of the column %>
               <div style="width: 25%; flex-shrink: 0;">
                 <% if actor.photo.attached? %>
@@ -27,7 +27,7 @@
                 <h6 class="fw-bold mb-1"><%= actor.name %></h6>
                 <small class="text-muted"><%= character&.character_name %></small>
               </div>
-            </div>
+            <% end %>
           </div>
         <% end %>
       </div>
