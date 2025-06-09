@@ -14,6 +14,9 @@ class Movie < ApplicationRecord
   has_many :movie_directors, dependent: :destroy
   has_many :directors, through: :movie_directors
 
+  has_many :movie_directors # This refers to the join model
+  has_many :directors, through: :movie_directors
+  
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },
