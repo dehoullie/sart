@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   # Directors
   # This is the ONLY `resources :casts` line that should define the 'show' action
   # if you intend /casts/:id to go to DirectorsController.
-  resources :casts, only: [:show], controller: 'directors' # Keep this one!
+  # resources :casts, only: [:show], controller: 'directors' # Keep this one!
+  resources :directors, only: [:index, :show]
 
   # Genres
   resources :genres, only: [:index] # Keep only one of these
@@ -27,7 +28,7 @@ Rails.application.routes.draw do
   # If you *do* want a general 'casts#index' to list all cast members,
   # you'd need to define it specifically (e.g., 'get "casts", to: "casts#index"').
   # For the director profile feature, this line is causing the conflict.
-  # REMOVED: resources :casts, only: [:index, :show]
+  resources :casts, only: [:index, :show]
 
   # Characters (These are fine)
   resources :characters, only: [:create, :destroy]
