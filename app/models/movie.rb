@@ -14,6 +14,23 @@ class Movie < ApplicationRecord
   has_many :movie_directors, dependent: :destroy
   has_many :directors, through: :movie_directors
 
+  has_neighbors :embedding
+  after_create :set_embedding
+
+    private
+
+  def set_embedding
+    client = OpenAI::Client.new
+    response = client.embeddings(
+      parameters: {
+        model: 'text-embedding-3-small',
+        input: "Movie: #{name}. Description: #{description}"
+      }
+    )
+    embedding = response['data'][0]['embedding']
+    update(embedding: embedding)
+  end
+
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },
