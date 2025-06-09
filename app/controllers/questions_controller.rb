@@ -1,4 +1,5 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!
     def create
     @questions = current_user.questions # needed in case of validation error
     @question = Question.new(question_params)
@@ -14,6 +15,12 @@ class QuestionsController < ApplicationController
     else
      render :index, status: :unprocessable_entity
     end
+
+  end
+
+  def index
+    @questions = current_user.questions
+    @question = Question.new # for form
   end
 
   private
