@@ -50,4 +50,7 @@ Rails.application.routes.draw do
   # Profile
   resource :profile, only: [:show, :edit, :update]
 
+  # Mission control to see jobs
+  mount MissionControl::Jobs::Engine, at: "/jobs"
+
 end

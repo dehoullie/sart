@@ -3,32 +3,55 @@
     <div class="col-12">
       <h4 class="fw-bold mb-4">Top Cast</h4>
       <div class="row g-4">
-        <%# Show up to 10 actors, two per row on md+ screens %>
-        <% @cast.each do |actor| %>
-          <% character = actor.characters.find_by(movie: @movie) %>
-          <div class="col-6 col-md-6">
-            <%= link_to cast_path(actor), data: { turbo_frame: '_top' }, class: "d-flex align-items-start text-decoration-none text-reset" do %>
-              <%# Actor image, fixed width 25% of the column %>
-              <div style="width: 25%; flex-shrink: 0;">
-                <% if actor.photo.attached? %>
-                <%= image_tag cloudinary_cast_photo(actor), alt: actor.name, class: "img-fluid rounded" %>
-                <% else %>
-                  <%# Compute initials: take first letters of each word in name %>
-                  <% initials = actor.name.split.map { |part| part[0] }.join.upcase %>
-                  <div
-                    class="d-flex align-items-center justify-content-center rounded"
-                    style="background-color: #cccccc; width: 100%; padding-top: 100%; position: relative;">
-                    <span class="initials"><%= initials %></span>
-                  </div>
-                <% end %>
+        <% if @movie.casts.size >= 10 %>
+          <%# Use DB records %>
+          <% @movie.casts.limit(10).each do |actor| %>
+            <% character = actor.characters.find_by(movie: @movie) %>
+            <div class="col-6 col-md-6">
+              <%= link_to cast_path(actor), data: { turbo_frame: '_top' }, class: "d-flex align-items-start text-decoration-none text-reset" do %>
+                <div style="width: 25%; flex-shrink: 0;">
+                  <% if actor.photo.attached? %>
+                    <%= image_tag cloudinary_cast_photo(actor), alt: actor.name, class: "img-fluid rounded" %>
+                  <% else %>
+                    <% initials = actor.name.split.map { |part| part[0] }.join.upcase %>
+                    <div
+                      class="d-flex align-items-center justify-content-center rounded"
+                      style="background-color: #cccccc; width: 100%; padding-top: 100%; position: relative;">
+                      <span class="initials"><%= initials %></span>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="ms-3">
+                  <h6 class="fw-bold mb-1"><%= actor.name %></h6>
+                  <small class="text-muted"><%= character&.character_name %></small>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <%# Use API fallback (@top_cast) %>
+          <% @top_cast.each do |actor| %>
+            <div class="col-6 col-md-6">
+              <div class="d-flex align-items-start text-decoration-none text-reset">
+                <div style="width: 25%; flex-shrink: 0;">
+                  <% if actor[:profile_path].present? %>
+                    <%= image_tag "https://image.tmdb.org/t/p/original/#{actor[:profile_path]}", alt: actor[:name], class: "img-fluid rounded" %>
+                  <% else %>
+                    <% initials = actor[:name].split.map { |part| part[0] }.join.upcase %>
+                    <div
+                      class="d-flex align-items-center justify-content-center rounded"
+                      style="background-color: #cccccc; width: 100%; padding-top: 100%; position: relative;">
+                      <span class="initials"><%= initials %></span>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="ms-3">
+                  <h6 class="fw-bold mb-1"><%= actor[:name] %></h6>
+                  <small class="text-muted"><%= actor[:character] %></small>
+                </div>
               </div>
-              <%# Name and character, with left margin %>
-              <div class="ms-3">
-                <h6 class="fw-bold mb-1"><%= actor.name %></h6>
-                <small class="text-muted"><%= character&.character_name %></small>
-              </div>
-            <% end %>
-          </div>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>

@@ -68,10 +68,16 @@
               <small class="text-white-50">
                 Directed by
                 <strong>
-                  <%= link_to @movie.directors.first.name,
-                              @movie.directors.first,
-                              data: { turbo_frame: "_top" },
-                              class: "text-white" %>
+                  <% if @movie.directors.first.present? %>
+                    <%= link_to @movie.directors.first.name,
+                                @movie.directors.first,
+                                data: { turbo_frame: "_top" },
+                                class: "text-white" %>
+                  <% elsif @director_name.present? %>
+                    <%= @director_name %>
+                  <% else %>
+                    Unknown
+                  <% end %>
                 </strong>
               </small>
 
