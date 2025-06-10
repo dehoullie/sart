@@ -51,7 +51,7 @@ class MoviesController < ApplicationController
     else
 
       @movies     = Movie.limit(3)
-      @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3
+      @last_movies = Movie.order(popularity: :desc).limit(10) if Movie.count > 3
       @top_genres = Genre.left_joins(:movies)
                         .group(:id)
                         .order("COUNT(movies.id) DESC")

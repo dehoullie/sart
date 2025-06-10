@@ -1,11 +1,11 @@
-<div id="carouselLastEvents" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="8000" data-bs-pause="hover" style="height: 50vh; margin: 0 auto; position: relative;">
+<div id="carouselLastEvents" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000" style="height: 50vh; margin: 0 auto; position: relative;">
   <div class="d-md-block tagline w-100">
     <h1><strong>s.art</strong></h1>
     <p>Every story, one search away...</p>
   </div>
 
   <div class="carousel-inner" style="height: 100%;">
-    <% @last_three.each_with_index do |movie, index| %>
+    <% @last_movies.each_with_index do |movie, index| %>
       <div class="carousel-item d-flex justify-content-center align-items-center <%= 'active' if index == 0 %>" style="height: 100%;">
         <%= image_tag cloudinary_backdrop(movie),
               class: "d-block h-100 carousel-img",

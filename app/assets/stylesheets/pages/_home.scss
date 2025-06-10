@@ -34,3 +34,20 @@ margin-top: 80px;
 #footer-nav.hidden {
   transform: translateY(100%);
 }
+// Add to app/assets/stylesheets/pages/_home.scss or a relevant file
+@keyframes zoomInSoft {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.carousel-img {
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.carousel-item.active .carousel-img {
+  animation: zoomInSoft 5s linear forwards;
+}
