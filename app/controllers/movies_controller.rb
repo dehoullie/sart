@@ -83,7 +83,7 @@ class MoviesController < ApplicationController
                       tmdb_id:      @movie.api_movie_id,
                       country_code: "us"
                     ).call
-    end
+      end
 
     @providers = result_hash
 
@@ -96,6 +96,25 @@ class MoviesController < ApplicationController
       .distinct
       .order(popularity: :desc)
       .limit(10)
+
+    # === NEW: fetch TMDb videos ===
+    uri = URI("https://api.themoviedb.org/3/movie/#{@movie.api_movie_id}/videos?language=en-US")
+    req = Net::HTTP::Get.new(uri)
+    req["Authorization"] = "Bearer #{TMDB_TOKEN}"
+    req["Accept"]        = "application/json"
+    resp = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
+    all_vids = JSON.parse(resp.body)["results"] || []
+
+    # select only YouTube trailers, keep “official” first
+    yt       = all_vids.select { |v| v["site"] == "YouTube" }
+    trailers = yt.select { |v| v["type"] == "Trailer" && v["official"] }  # official trailers first
+    others   = yt.reject { |v| trailers.include?(v) }                    # fallback clips
+    @videos  = (trailers + others).first(3)                              # up to 3 videos
+
+    # background banner clip: pick the first official Clip (or Trailer) if you like
+    banner   = yt.find { |v| v["official"] && v["type"] == "Trailer" } ||
+               yt.find { |v| v["official"] && v["type"] == "Clip" }
+    @banner_key = banner && banner["key"]
   end
 
 end
