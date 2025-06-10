@@ -1,4 +1,4 @@
-<div id="<%= dom_id(question) %>" class="question">
+<div id="<%= dom_id(question) %>" data-reset-form-target="listItem" class="question">
   <%= turbo_stream_from dom_id(question) %>
 
   <p class="user-question"><%= question.user_question %></p>
