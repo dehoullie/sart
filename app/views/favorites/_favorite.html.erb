@@ -6,15 +6,18 @@
           method: :post,
           form: {
             data: {
-              turbo_frame: "favorite_#{movie.id}"
+              turbo_frame: "favorite_#{movie.id}",
+              controller:"favorite",
+              action: "click->favorite#animate",
             }
           },
-          class: "btn p-0 border-0 bg-transparent"
+          class: "btn p-0 border-0 bg-transparent",
+
         ) do %>
       <% if current_user.favorites.exists?(movie: movie) %>
-        <i class="fa-solid fa-heart text-danger fs-3"></i>
+        <i id="favorite-button"  class="fa-solid fa-heart text-danger fs-3 animate__animated animate__bounce" data-favorite-target="heart"></i>
       <% else %>
-        <i class="fa-regular fa-heart text-danger fs-3"></i>
+        <i id="favorite-button"  class="fa-regular fa-heart text-danger fs-3 animate__animated" data-favorite-target="heart"></i>
       <% end %>
     <% end %>
   </div>
