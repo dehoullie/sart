@@ -26,10 +26,10 @@ export default class extends Controller {
     // if >= 3 runs the search
     if (event.target.value.length >= 3) {
 
-      this.element.querySelector("input[type='search']").classList.add("border-end-0");
-      this.cancelButtonTarget.classList.remove("d-none");
-      this.element.requestSubmit();
-      this.backButtonTarget.classList.remove("d-none");
+      // this.element.querySelector("input[type='search']").classList.add("border-end-0");
+      // this.cancelButtonTarget.classList.remove("d-none");
+      // this.element.requestSubmit();
+      // this.backButtonTarget.classList.remove("d-none");
     }
   }
   onCancelClick(event) {

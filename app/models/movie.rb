@@ -20,6 +20,15 @@ class Movie < ApplicationRecord
   has_many :movie_directors # This refers to the join model
   has_many :directors, through: :movie_directors
 
+  # after_create_commit do
+  #   broadcast_append_to(
+  #     "search_results_#{title.parameterize}",
+  #     target: "results_list",
+  #     partial: "shared/movie_card",
+  #     locals: { movie: self }
+  #   )
+  # end
+
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },

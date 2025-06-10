@@ -1,39 +1,63 @@
 class MoviesController < ApplicationController
+  require 'uri'
+  require 'net/http'
+  require 'cgi'
+  TMDB_TOKEN = ENV.fetch("TMDB_API_KEY")
+
   def index
-    q = params[:query].to_s.strip if params[:query].present?
+    q = params[:query].to_s.strip
 
     if q.present?
-      # User submitted a non‐empty search. Return just the search results partial.
-      @movies = Movie
-        .left_outer_joins(characters: :cast)
-        .where(
-          "movies.title ILIKE :q
-           OR movies.overview ILIKE :q
-           OR characters.character_name ILIKE :q
-           OR casts.name ILIKE :q",
-          q: "%#{q}%"
-        )
-        .distinct
-        .order(popularity: :desc)
-        .limit(10)
-      render partial: "shared/results", locals: { movies: @movies }
-    else
-      # No search term: render the full index (banner + home-content) as normal
-      @movies     = Movie.limit(3)                            # for banner & home-content
-      @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3 # for banner
-      # Get a list of 5 genres with most count movies
-      @top_genres   = Genre
-        .left_joins(:movies)
-        .group(:id)
-        .order("COUNT(movies.id) DESC")
-        .limit(5)
-      @genres       = Genre.all
-      # Popular movies for the home-content section order by popularity column in the movies table
-      @popular_movies = Movie.order(popularity: :desc).limit(5)
+      # 1) search local DB
+      local = Movie.where("title ILIKE ?", "%#{q}%").order(popularity: :desc).limit(5)
 
-      respond_to do |format|
-        format.html   # will render app/views/movies/index.html.erb
+      # 2) if too few results, fetch top match from TMDb and save immediately
+      if local.size < 3
+        tmdb_url = URI("https://api.themoviedb.org/3/search/movie?query=#{CGI.escape(q)}&include_adult=false&language=en-US&page=1")
+        http     = Net::HTTP.new(tmdb_url.host, tmdb_url.port)
+        http.use_ssl = true
+        req      = Net::HTTP::Get.new(tmdb_url)
+        req["Authorization"] = "Bearer #{TMDB_TOKEN}"
+        req["Accept"]        = "application/json"
+        tmdb_res = http.request(req)
+        results  = JSON.parse(tmdb_res.body)["results"] || []
+
+        if results.any?
+          # build list of existing TMDb IDs already in our local results
+          existing_ids = local.map(&:api_movie_id)
+
+          # sort TMDb results by descending popularity, extract their IDs
+          candidates = results
+            .sort_by { |r| -r["popularity"].to_f }
+            .map    { |r| r["id"] }
+
+          # determine how many more to enqueue
+          needed = 3 - local.size
+
+          # enqueue jobs for the top 'needed' movies not already in local
+          candidates
+            .reject { |id| existing_ids.include?(id) }
+            .first(needed)
+            .each { |movie_id| SaveMovieJob.perform_later(movie_id, q) }
+        end
+
+        # reload from DB after saving
+        local = Movie.where("title ILIKE ?", "%#{q}%").order(popularity: :desc).limit(5)
       end
+
+      @movies = local
+      render partial: "shared/results"
+    else
+      # your existing “noq” branch unchanged
+      @movies     = Movie.limit(3)
+      @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3
+      @top_genres = Genre.left_joins(:movies)
+                        .group(:id)
+                        .order("COUNT(movies.id) DESC")
+                        .limit(5)
+      @genres     = Genre.all
+      @popular_movies = Movie.order(popularity: :desc).limit(5)
+      respond_to { |format| format.html }
     end
   end
 

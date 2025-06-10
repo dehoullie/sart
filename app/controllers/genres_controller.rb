@@ -6,6 +6,7 @@ class GenresController < ApplicationController
     if @genre
       @movies = @genre.movies.includes(:genres).order(popularity: :desc)
       render partial: "shared/results", locals: { movies: @movies }
+
     else
       @movies = Movie.none # No movies if genre not found
     end
