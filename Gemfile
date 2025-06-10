@@ -90,3 +90,5 @@ gem "geocoder"
 gem 'httparty'
 
 gem 'nokogiri'
+
+gem "mission_control-jobs"

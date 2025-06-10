@@ -66,6 +66,9 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @cast = @movie.casts.includes(:characters)
     @genres = @movie.genres
+    cast_info = fetch_cast_info(@movie.api_movie_id)
+    @director_name = cast_info[:director_name]
+    @top_cast = cast_info[:cast]
     @is_favorite = current_user.favorites.exists?(movie_id: @movie.id) if user_signed_in?
     # Similar movies list by genre / category
 
@@ -117,4 +120,46 @@ class MoviesController < ApplicationController
     @banner_key = banner && banner["key"]
   end
 
+  private
+
+  def fetch_director_name(api_movie_id)
+    api_token = ENV['TMDB_API_KEY']
+    base_url  = 'https://api.themoviedb.org/3'
+    uri = URI("#{base_url}/movie/#{api_movie_id}/credits")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Get.new(uri)
+    req['accept'] = 'application/json'
+    req['Authorization'] = "Bearer #{api_token}"
+    response = http.request(req)
+    credits = JSON.parse(response.body)
+    director = credits['crew']&.find { |c| c['job'] == 'Director' }
+    director ? director['name'] : nil
+  end
+
+  def fetch_cast_info(api_movie_id)
+    api_token = ENV['TMDB_API_KEY']
+    base_url  = 'https://api.themoviedb.org/3'
+    uri = URI("#{base_url}/movie/#{api_movie_id}/credits")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Get.new(uri)
+    req['accept'] = 'application/json'
+    req['Authorization'] = "Bearer #{api_token}"
+    response = http.request(req)
+    credits = JSON.parse(response.body)
+
+    director = credits['crew']&.find { |c| c['job'] == 'Director' }
+    director_name = director ? director['name'] : nil
+
+    cast_array = credits['cast']&.first(10)&.map do |actor|
+      {
+        name: actor['name'],
+        character: actor['character'],
+        profile_path: actor['profile_path']
+      }
+    end || []
+
+    { director_name: director_name, cast: cast_array }
+  end
 end
