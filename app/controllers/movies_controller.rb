@@ -6,6 +6,7 @@ class MoviesController < ApplicationController
 
   def index
     q = params[:query].to_s.strip
+    @query = q
 
     if q.present?
       # 1) search local DB
@@ -48,7 +49,7 @@ class MoviesController < ApplicationController
       @movies = local
       render partial: "shared/results"
     else
-      # your existing “noq” branch unchanged
+
       @movies     = Movie.limit(3)
       @last_three = Movie.order(popularity: :desc).limit(3) if Movie.count > 3
       @top_genres = Genre.left_joins(:movies)
@@ -86,12 +87,6 @@ class MoviesController < ApplicationController
 
     @providers = result_hash
 
-    # Trying to get the links to the movies:
-    # Attempt to get JustWatch deep-link offers
-    # @watch_offers = JustwatchPartner.new(
-    #   tmdb_id: @movie.api_movie_id,
-    #   country: session[:country_code] || 'US'
-    # ).offers_with_urls
     # SIMILAR MOVIES: find other movies that share at least one genre with current movie
     genre_ids = @genres.pluck(:id)
     @similar_movies = Movie
@@ -102,5 +97,5 @@ class MoviesController < ApplicationController
       .order(popularity: :desc)
       .limit(10)
   end
-  # other actions (show, etc.) remain unchanged
+
 end

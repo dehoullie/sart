@@ -1,5 +1,5 @@
 <%# app/views/shared/_movie_card.html.erb %>
-<div class="col-6 d-flex">
+<div class="col-6 d-flex" data-movie-card>
   <%= link_to movie_path(movie), data: { turbo_frame: "_top" },
                       class: "text-decoration-none text-reset" do %>
     <div class="card flex-fill">
