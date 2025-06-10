@@ -1,36 +1,57 @@
 <turbo-frame id="movies_container">
 <div class="">
     <!-- Movie Header Section -->
-<div id="page‐wrapper" class="position-relative movie-header mb-5">
-  <!-- 1) BACKDROP IMAGE -->
-  <div
-    class="w-100"
-    style="
-      height: 50vh;
-      background-size: cover;
-      background-position: center center;
-     background-image:
-linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= Cloudinary::Utils.cloudinary_url("sart/movies/#{@movie.api_movie_id}_backdrop") %>);
-    ">
-    <!-- 2) DARK OVERLAY GRADIENT -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 header-gradient"></div>
+<div id="page-wrapper" class="position-relative movie-header mb-5">
+    <div class="w-100" style="height:50vh; overflow:hidden;">
+      <%#— if we have a banner clip, autoplay/mute/loop it —%>
+      <% if @banner_key %>
+        <div class="banner-video-container">
+          <iframe
+            class="banner-video"
+            src="https://www.youtube.com/embed/<%= @banner_key %>?autoplay=1&mute=1&loop=1&playlist=<%= @banner_key %>&controls=0&showinfo=0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>
+          <div class="banner-dark-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+        </div>
+      <%#— dark overlay so text remains legible —%>
+      <% else %>
+        <div
+          class="w-100 h-100"
+          style="
+            background-image:
+              linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.52),
+                rgba(0,0,0,0.73)
+              ),
+              url(<%= Cloudinary::Utils.cloudinary_url("sart/movies/#{@movie.api_movie_id}_backdrop") %>);
+            background-size: cover;
+            background-position: center center;
+          ">
+        </div>
+      <% end %>
+    </div>
 
-    <!-- 3) TEXT CONTAINER -->
+    <%#— TEXT OVERLAY —%>
     <div class="position-absolute bottom-0 start-0 w-100 text-white py-3 px-4">
       <div class="container">
         <div class="row">
           <div class="col-12 col-md-8">
-            <!-- Movie Title + Year -->
-            <h3 class="mb-1">
-              <%= @movie.title %>
-              <small class="fs-4 text-light">(<%= @movie.release_date.strftime("%Y") %>)</small>
-            </h3>
 
-            <!-- Duration + Genre Badges -->
+            <%# Movie Title + Year %>
+            <h1 class="fw-bold display-6 mb-1">
+              <%= @movie.title %>
+              <small class="fs-4 text-light">
+                (<%= @movie.release_date.strftime("%Y") %>)
+              </small>
+            </h1>
+
+            <%# Duration + Genre Badges %>
             <div class="d-flex align-items-center mb-2">
+              <% hours = @movie.runtime / 60 %>
+              <% mins  = @movie.runtime % 60 %>
               <small class="me-3 fst-italic">
-                <% hours = @movie.runtime / 60 %>
-                <% mins  = @movie.runtime % 60 %>
                 <%= "#{hours}h #{mins}min" %>
               </small>
               <div>
@@ -42,28 +63,31 @@ linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= Cl
               </div>
             </div>
 
-            <!-- Director -->
-            <p class="text-white">
-              <div class="d-flex align-items-center">
-                <small>
-                  Directed by
-                  <strong>
-                    <%= link_to @movie.directors.first.name, @movie.directors.first, data: { turbo_frame: '_top' }, class: "text-white" %>
-                  </strong>
-                </small>
-                <div class="ms-auto">
-                  <%= turbo_frame_tag "favorite_#{@movie.id}" do %>
-                    <%= render partial: "favorites/favorite", locals: { movie: @movie } %>
-                  <% end %>
-                </div>
+            <%# Director + Favorite Heart %>
+            <div class="d-flex align-items-center">
+              <small class="text-white-50">
+                Directed by
+                <strong>
+                  <%= link_to @movie.directors.first.name,
+                              @movie.directors.first,
+                              data: { turbo_frame: "_top" },
+                              class: "text-white" %>
+                </strong>
+              </small>
+
+              <div class="ms-auto">
+                <%= turbo_frame_tag "favorite_#{@movie.id}" do %>
+                  <%= render "favorites/favorite", movie: @movie %>
+                <% end %>
               </div>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+            </div>
+
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container -->
+    </div><!-- /.text-overlay -->
+
+  </div><!-- /#page-wrapper -->
 
 <%#========================%>
 <%#   OVERVIEW SECTION      %>
@@ -85,6 +109,10 @@ linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= Cl
 <%#===========================%>
 <!-- filepath: app/views/movies/show.html.erb -->
 <%= render "movies/where_to_watch", movie: @movie, providers: @providers %>
+<%#===========================%>
+<%#  TRAILER SECTION    %>
+<%#===========================%>
+<%= render "movies/trailers", videos: @videos %>
 <%#=====================%>
 <%#  TOP CAST SECTION    %>
 <%#=====================%>
