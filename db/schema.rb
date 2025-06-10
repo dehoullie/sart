@@ -284,7 +284,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_09_143919) do
   add_foreign_key "movie_directors", "directors"
   add_foreign_key "movie_directors", "movies"
   add_foreign_key "movies_genres", "genres"
-  add_foreign_key "movies_genres", "movies"  add_foreign_key "questions", "users"
+  add_foreign_key "movies_genres", "movies"
+  add_foreign_key "questions", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
