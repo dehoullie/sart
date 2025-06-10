@@ -10,4 +10,53 @@ module ApplicationHelper
   def cloudinary_cast_photo(cast)
     "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/cast/#{cast.api_cast_id}_profile"
   end
+
+  # NEW: Returns the best poster URL (Cloudinary if attached, else TMDb live, else fallback)
+  def movie_poster_url(movie)
+    if movie.poster.attached?
+      cloudinary_poster(movie)
+    else
+      poster_path = fetch_poster_path_from_api(movie.api_movie_id)
+      if poster_path.present?
+        "https://image.tmdb.org/t/p/original#{poster_path}"
+      else
+        asset_path("fallback-image.jpg")
+      end
+    end
+  end
+
+  # Helper to fetch poster_path from TMDb API live
+  def fetch_poster_path_from_api(api_movie_id)
+    api_token = ENV['TMDB_API_KEY']
+    base_url  = 'https://api.themoviedb.org/3'
+    uri = URI("#{base_url}/movie/#{api_movie_id}?language=en-US")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Get.new(uri)
+    req['accept'] = 'application/json'
+    req['Authorization'] = "Bearer #{api_token}"
+    response = http.request(req)
+    details = JSON.parse(response.body)
+    details['poster_path']
+  rescue
+    nil
+  end
+
+  def cloudinary_poster_exists?(movie)
+    require 'net/http'
+    url = cloudinary_poster(movie)
+    uri = URI(url)
+    response = Net::HTTP.get_response(uri)
+    response.is_a?(Net::HTTPSuccess)
+  rescue
+    false
+  end
+
+  def best_movie_poster_url(movie)
+    if cloudinary_poster_exists?(movie)
+      cloudinary_poster(movie)
+    else
+      movie_poster_url(movie)
+    end
+  end
 end

@@ -3,7 +3,7 @@
   <%= link_to movie_path(movie), data: { turbo_frame: "_top" },
                       class: "text-decoration-none text-reset" do %>
     <div class="card flex-fill h-100">
-      <%= image_tag cloudinary_poster(movie),
+      <%= image_tag best_movie_poster_url(movie),
                     class: "card-img-top",
                     alt: movie.title %>
       <div class="card-body">
