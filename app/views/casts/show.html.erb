@@ -24,7 +24,10 @@
           <p class="text mb-2"><strong>Department:</strong></p>
           <%= @tmdb_cast['known_for_department'] %>
           <p class="text mb-2"><strong>Born:</strong></p>
-           <%= @tmdb_cast['birthday'] %> in <%= @tmdb_cast['place_of_birth'] %>
+          <% if @tmdb_cast['birthday'].present? %>
+            <%= Date.parse(@tmdb_cast['birthday']).strftime("%d/%m/%Y") %>
+          <% end %>
+          in <%= @tmdb_cast['place_of_birth'] %>
           <div class="mt-3">
             <p data-controller="bio-button">
               <button class="btn p-0 d-flex align-items-center w-100" type="button"

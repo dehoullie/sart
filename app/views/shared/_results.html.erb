@@ -1,16 +1,16 @@
 <%# app/views/shared/_results.html.erb %>
-<%= turbo_stream_from "search_results_#{params[:query].to_s.parameterize}" %>
 <%= turbo_frame_tag "genre_results" do %>
 
 <%= turbo_frame_tag :movies_container do %>
-  <div class="container px-3 pb-3 bottom-push push-search ">
+<%= turbo_stream_from "search_results_#{@query.parameterize}" if @query %>
+  <div class="container px-3 pb-3 bottom-push push-search" data-controller="search-loader">
     <div class="row g-3" id="results_list">
       <% @movies.each do |movie| %>
         <%= render partial: "shared/movie_card", locals: { movie: movie } %>
       <% end %>
 
       <%#— fill up to 3 with skeletons —%>
-      <% threshold = 3
+      <% threshold = 4
          missing   = [threshold - @movies.size, 0].max
       %>
       <% missing.times do %>
