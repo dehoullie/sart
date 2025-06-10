@@ -13,6 +13,7 @@
 ActiveRecord::Schema[7.1].define(version: 2025_06_09_143919) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "vector"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -109,6 +110,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_09_143919) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "popularity"
+    t.vector "embedding", limit: 1536
   end
 
   create_table "movies_genres", force: :cascade do |t|
@@ -118,6 +120,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_09_143919) do
     t.datetime "updated_at", null: false
     t.index ["genre_id"], name: "index_movies_genres_on_genre_id"
     t.index ["movie_id"], name: "index_movies_genres_on_movie_id"
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.text "user_question"
+    t.text "ai_answer"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_questions_on_user_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -273,7 +284,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_09_143919) do
   add_foreign_key "movie_directors", "directors"
   add_foreign_key "movie_directors", "movies"
   add_foreign_key "movies_genres", "genres"
-  add_foreign_key "movies_genres", "movies"
+  add_foreign_key "movies_genres", "movies"  add_foreign_key "questions", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

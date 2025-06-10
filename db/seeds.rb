@@ -214,6 +214,8 @@ movies_data.each do |movie_data|
   puts "Finished seeding '#{movie.title}'."
 end
 
+Movie.set_all_embeddings
+
 # -----------------------------------------------------------------------------
 # Section: Summary output
 puts "🌟 Seeding complete!"
