@@ -11,7 +11,7 @@ class SaveMovieJob < ApplicationJob
   API_TOKEN = ENV['TMDB_API_KEY']
   BASE_URL   = 'https://api.themoviedb.org/3'
 
-  def perform(api_movie_id)
+  def perform(api_movie_id, query = nil)
     if Movie.exists?(api_movie_id: api_movie_id)
       puts "SaveMovieJob: Movie with api_movie_id=#{api_movie_id} already exists"
       return
@@ -122,6 +122,16 @@ class SaveMovieJob < ApplicationJob
           content_type: 'image/jpeg'
         )
       end
+    end
+
+    # Turbo Stream broadcast for live search results
+    if query.present?
+      movie.broadcast_append_to(
+        "search_results_#{query.parameterize}",
+        target: "results_list",
+        partial: "shared/movie_card",
+        locals: { movie: movie }
+      )
     end
 
     cast_count     = movie.characters.count

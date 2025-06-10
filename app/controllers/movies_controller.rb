@@ -38,7 +38,7 @@ class MoviesController < ApplicationController
           candidates
             .reject { |id| existing_ids.include?(id) }
             .first(needed)
-            .each { |movie_id| SaveMovieJob.perform_later(movie_id) }
+            .each { |movie_id| SaveMovieJob.perform_later(movie_id, q) }
         end
 
         # reload from DB after saving

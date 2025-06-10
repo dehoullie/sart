@@ -1,5 +1,5 @@
 <%# app/views/shared/_results.html.erb %>
-<%= turbo_stream_from "search_results_#{params[:query]}" %>
+<%= turbo_stream_from "search_results_#{params[:query].to_s.parameterize}" %>
 <%= turbo_frame_tag "genre_results" do %>
 
 <%= turbo_frame_tag :movies_container do %>
