@@ -10,7 +10,7 @@
         <%= link_to lucide_icon('house'), root_path, class: "nav-link active"  %>
       </li>
       <li class="nav-item flex-fill text-center">
-        <a class="nav-link active" href="#"><%= lucide_icon('bot') %></a>
+        <%= link_to lucide_icon('bot'), questions_path, class: "nav-link active"  %>
       </li>
       <li class="nav-item flex-fill text-center">
         <% if user_signed_in? %>
