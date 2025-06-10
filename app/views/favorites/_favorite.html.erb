@@ -1,22 +1,26 @@
 <% if user_signed_in? %>
-<turbo-frame id="favorite_<%= movie.id %>">
-  <div id="favorite-heart-<%= movie.id %>" class="favorite-heart">
-    <%= button_to(
-          favorites_path(id: movie.id),
-          method: :post,
-          form: {
-            data: {
-              turbo_frame: "favorite_#{movie.id}"
-            }
-          },
-          class: "btn p-0 border-0 bg-transparent"
-        ) do %>
-      <% if current_user.favorites.exists?(movie: movie) %>
-        <i class="fa-solid fa-heart text-danger fs-3"></i>
-      <% else %>
-        <i class="fa-regular fa-heart text-danger fs-3"></i>
+<div data-controller="favorite" class="animate__animated">
+  <turbo-frame id="favorite_<%= movie.id %>">
+    <div id="favorite-heart-<%= movie.id %>" class="favorite-heart">
+      <%= button_to(
+            favorites_path(id: movie.id),
+            method: :post,
+            form: {
+              data: {
+                turbo_frame: "favorite_#{movie.id}",
+                action: "click->favorite#animate",
+              }
+            },
+            class: "btn p-0 border-0 bg-transparent",
+
+          ) do %>
+        <% if current_user.favorites.exists?(movie: movie) %>
+          <i id="favorite-button"  class="fa-solid fa-heart text-danger fs-3" data-favorite-target="heart"></i>
+        <% else %>
+          <i id="favorite-button"  class="fa-regular fa-heart text-danger fs-3" data-favorite-target="heart"></i>
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
+  </turbo-frame>
   </div>
-</turbo-frame>
 <% end %>
