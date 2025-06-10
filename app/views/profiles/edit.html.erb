@@ -1,0 +1,94 @@
+<div class="container push-search bottom-push">
+  <h1>Edit Your Profile</h1>
+
+  <%= form_with model: @user, url: profile_path,
+                method: :patch, local: true,
+                html: { multipart: true } do |f| %>
+
+    <div class="mb-3 text-center">
+      <% if @user.avatar.attached? %>
+        <%= cl_image_tag(
+              @user.avatar.key,
+              width: 100, height: 100,
+              alt:       @user.name,
+              class:     "rounded-circle mx-auto d-block border border-light border-2"
+            ) %>
+      <% else %>
+        <%= lucide_icon('circle-user-round',
+              class: 'text-secondary',
+              width: 100, height: 100) %>
+      <% end %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :avatar %><br>
+      <%= f.file_field :avatar, class: "form-control" %>
+    </div>
+
+    <% if @user.avatar.attached? %>
+      <div class="mb-3 form-check">
+        <%= f.check_box :remove_avatar,
+              { class: "form-check-input" },
+              "1", "0" %>
+        <%= f.label :remove_avatar,
+              "Remove avatar",
+              class: "form-check-label" %>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :country %>
+      <%= f.text_field :country, class: "form-control" %>
+    </div>
+
+    <hr>
+
+    <button class="btn btn-outline-secondary mb-3 w-100"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#changePasswordSection"
+            aria-expanded="false"
+            aria-controls="changePasswordSection">
+      Change Password
+    </button>
+
+    <div class="collapse" id="changePasswordSection">
+      <h4>Change Password</h4>
+      <p class="text-muted small">
+        Leave blank to keep your current password.
+      </p>
+
+      <div class="mb-3">
+        <%= f.label :current_password %>
+        <%= f.password_field :current_password,
+              autocomplete: "current-password",
+              class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :password, "New Password" %>
+        <%= f.password_field :password,
+              autocomplete: "new-password",
+              class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :password_confirmation,
+              "Confirm New Password" %>
+        <%= f.password_field :password_confirmation,
+              autocomplete: "new-password",
+              class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="d-grid mt-4">
+      <%= f.submit "Save Changes",
+            class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

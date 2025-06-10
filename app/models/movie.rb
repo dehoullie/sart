@@ -17,6 +17,9 @@ class Movie < ApplicationRecord
   has_neighbors :embedding
   after_create :set_embedding
 
+  has_many :movie_directors # This refers to the join model
+  has_many :directors, through: :movie_directors
+
   COUNTRIES = [
             { code: 'de', name: 'Germany' },
             { code: 'us', name: 'United States' },

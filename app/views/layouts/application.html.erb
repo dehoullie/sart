@@ -14,7 +14,6 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
   />
 
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -39,10 +38,12 @@
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
+    <%= render partial: "shared/footer" %>
     <%= render "shared/flashes" %>
 
     <%= render partial: "shared/search-bar" %>
+
     <%= yield %>
-<%= render "shared/footer" %>
+
   </body>
 </html>

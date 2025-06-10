@@ -6,9 +6,10 @@
             data: { turbo_frame: '_top' },
             class: "text-decoration-none text-reset" do %>
         <div class="card me-3 shadow-sm" style="min-width: 8rem; max-width: 8rem;">
-          <%= cl_image_tag movie.poster.key, class: "card-img-top", alt: movie.title %>
+          <%= image_tag cloudinary_poster(movie), class: "card-img-top", alt: movie.title %>
         </div>
         <% end %>
-        <% end %>
+      <% end %>
     </div>
   </div>
+</div>

@@ -1,7 +1,7 @@
-  <div class="">
-
+<turbo-frame id="movies_container">
+<div class="">
     <!-- Movie Header Section -->
-    <div class="position-relative movie-header mb-5">
+<div id="page‐wrapper" class="position-relative movie-header mb-5">
   <!-- 1) BACKDROP IMAGE -->
   <div
     class="w-100"
@@ -9,8 +9,8 @@
       height: 50vh;
       background-size: cover;
       background-position: center center;
-      background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= @movie.backdrop.url %>);
+     background-image:
+linear-gradient(to bottom, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.73)), url(<%= Cloudinary::Utils.cloudinary_url("sart/movies/#{@movie.api_movie_id}_backdrop") %>);
     ">
     <!-- 2) DARK OVERLAY GRADIENT -->
     <div class="position-absolute top-0 start-0 w-100 h-100 header-gradient"></div>
@@ -44,7 +44,19 @@
 
             <!-- Director -->
             <p class="text-white">
-              <small>Directed by <strong><%= @movie.directors[0].name %></strong></small>
+              <div class="d-flex align-items-center">
+                <small>
+                  Directed by
+                  <strong>
+                    <%= link_to @movie.directors.first.name, @movie.directors.first, data: { turbo_frame: '_top' }, class: "text-white" %>
+                  </strong>
+                </small>
+                <div class="ms-auto">
+                  <%= turbo_frame_tag "favorite_#{@movie.id}" do %>
+                    <%= render partial: "favorites/favorite", locals: { movie: @movie } %>
+                  <% end %>
+                </div>
+              </div>
             </p>
           </div>
         </div>
@@ -56,6 +68,8 @@
 <%#========================%>
 <%#   OVERVIEW SECTION      %>
 <%#========================%>
+
+
 <div class="container mb-5">
   <div class="row">
     <div class="col-12">
@@ -79,3 +93,4 @@
 <%#  Similar movies    %>
 <%#=====================%>
 <%= render partial: "shared/movie_list", locals: { title: 'Similar Movies', movie_list: @similar_movies } %>
+</turbo-frame>

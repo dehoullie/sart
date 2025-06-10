@@ -1,31 +1,28 @@
- <%if @genre.present?%>
-  <div class="container results-container">
-    <h2><%= @genre.name%></h2>
-  </div>
-  <%else%>
-  <div class="results-container">
-    <div class="container">
-
-      <h1 class="mb-4">Browse by Genre</h1>
-
+<%= turbo_frame_tag "movies_container" do %>
+<%= turbo_frame_tag "genre_results" do %>
+  <% if @genre.present? %>
+    <%= render partial: "shared/results", locals: { movies: @genre.movies.order(popularity: :desc) } %>
+  <% else %>
+    <div class="results-container">
+      <div class="container">
+        <h1 class="mb-4">Browse by Genre</h1>
+      </div>
+    </div>
+    <div class="container mt-4">
+  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+      <% @genres.each do |genre| %>
+        <%= link_to genres_path(genre: genre.name), data: { turbo_frame: "genre_results" } do %>
+          <div class="col">
+            <div class="card text-center shadow-sm h-100">
+              <div class="card-body d-flex align-items-center justify-content-center" style="height: 100px;">
+                <h5 class="card-title mb-0"><%= genre.name %></h5>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     </div>
   </div>
- <%end%>
-<div class="container mt-4">
-  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
-    <% @genres.each do |genre| %>
-      <%= link_to genres_path(genre: genre.name) do %>
-      <div class="col">
-        <div class="card text-center shadow-sm h-100">
-          <div class="card-body d-flex align-items-center justify-content-center" style="height: 100px;">
-            <h5 class="card-title mb-0"><%= genre.name %></h5>
-          </div>
-        </div>
-      </div>
-      <% end %>
-    <% end %>
-  </div>
-</div>
-<div class="results-container">
-
-  </div>
+  <% end %>
+<% end %>
+<% end %>
