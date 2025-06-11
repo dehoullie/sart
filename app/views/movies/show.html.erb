@@ -1,4 +1,6 @@
 <turbo-frame id="movies_container">
+  <% content_for :meta_title, "#{@movie.title} is on #{DEFAULT_META["meta_product_name"]}" %>
+  <% content_for :meta_description, @movie.overview %>
 <div class="">
     <!-- Movie Header Section -->
 <div id="page-wrapper" class="position-relative movie-header mb-5">
