@@ -13,7 +13,7 @@ class MoviesController < ApplicationController
       local = Movie.where("title ILIKE ?", "%#{q}%").order(popularity: :desc).limit(5)
 
       # 2) if too few results, fetch top match from TMDb and save immediately
-      if local.size < 3
+      if local.size < 10
         tmdb_url = URI("https://api.themoviedb.org/3/search/movie?query=#{CGI.escape(q)}&include_adult=false&language=en-US&page=1")
         http     = Net::HTTP.new(tmdb_url.host, tmdb_url.port)
         http.use_ssl = true
@@ -33,7 +33,7 @@ class MoviesController < ApplicationController
             .map    { |r| r["id"] }
 
           # determine how many more to enqueue
-          needed = 3 - local.size
+          needed = 10 - local.size
 
           # enqueue jobs for the top 'needed' movies not already in local
           candidates
