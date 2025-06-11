@@ -1,6 +1,6 @@
-<div class="container chatbot">
+<div class="container chatbot" data-controller="reset-form">
   <h1>Chat with us</h1>
-  <div id="questions">
+  <div id="questions" data-reset-form-target="list">
     <%= render @questions %>
   </div>
 
