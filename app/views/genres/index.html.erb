@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "movies_container" do %>
 <%= turbo_frame_tag "genre_results" do %>
   <% if @genre.present? %>
-    <%= render partial: "shared/results", locals: { movies: @genre.movies.order(popularity: :desc) } %>
+    <%= render partial: "shared/results", locals: { movies: @genre.movies.order(popularity: :desc).limit(20) } %>
   <% else %>
     <div class="results-container">
       <div class="container">

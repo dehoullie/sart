@@ -1,7 +1,22 @@
 module ApplicationHelper
+  # def cloudinary_poster(movie)
+  #   "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
+  # end
+
   def cloudinary_poster(movie)
+  if movie.poster.attached?
+    # Use the attached Cloudinary poster
     "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
+  else
+    # Fallback: fetch poster_path from TMDb API (SLOW if used in views!)
+    poster_path = fetch_poster_path_from_api(movie.api_movie_id)
+    if poster_path.present?
+      "https://image.tmdb.org/t/p/original#{poster_path}"
+    else
+      asset_path("fallback-image.jpg")
+    end
   end
+end
 
   def cloudinary_backdrop(movie)
     "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_backdrop"
@@ -20,7 +35,7 @@ module ApplicationHelper
       if poster_path.present?
         "https://image.tmdb.org/t/p/original#{poster_path}"
       else
-        asset_path("fallback-image.jpg")
+        # asset_path("fallback-image.jpg")
       end
     end
   end

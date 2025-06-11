@@ -1,11 +1,13 @@
 <%# app/views/shared/_movie_card.html.erb %>
 <div class="col-6 d-flex" data-movie-card>
-  <%= link_to movie_path(movie), data: { turbo_frame: "_top" },
-                      class: "text-decoration-none text-reset" do %>
+  <%= link_to movie_path(movie), data: { turbo_frame: "_top" }, class: "text-decoration-none text-reset" do %>
     <div class="card flex-fill h-100">
-      <%= image_tag best_movie_poster_url(movie),
-                    class: "card-img-top",
-                    alt: movie.title %>
+      <%= image_tag(
+            cloudinary_poster(movie),
+            class: "card-img-top",
+            alt: movie.title
+          )
+      %>
       <div class="card-body">
         <h5 class="card-title"><%= movie.title %></h5>
       </div>
