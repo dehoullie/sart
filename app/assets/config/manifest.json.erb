@@ -1,0 +1,22 @@
+{
+  "name": "s.art",
+  "short_name": "s.art",
+  "description": "s.art is film search site, to find where to watch your favorite movies!",
+  "background_color": "#ffffff",
+  "theme_color": "#111111",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "orientation": "portrait",
+  "icons": [
+    <% files = Dir.entries(Rails.root.join("app/assets/images/icons/")).select {|f| !File.directory?(f) && f.ends_with?('.png')} %>
+    <% files.each_with_index do |file, index| %>
+      <% match = file.match(/.+-(?<size>\d{2,4}x\d{2,4})\.png/) %>
+      {
+        "src": "<%= image_path "icons/#{file}" %>",
+        "sizes": "<%= match && match[:size] %>",
+        "type": "image/png"
+      }<%= "," unless index == files.size - 1 %>
+    <% end %>
+  ]
+}
