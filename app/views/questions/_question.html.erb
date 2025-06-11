@@ -2,5 +2,26 @@
   <%= turbo_stream_from dom_id(question) %>
 
   <p class="user-question"><%= question.user_question %></p>
-  <p class="ai-answer"><%= question.ai_answer || "..." %></p>
+
+  <% if question.ai_answer.present? %>
+    <% suggestions = JSON.parse(question.ai_answer)["suggestions"] rescue [] %>
+    <% suggestions.each do |suggestion| %>
+      <div class="chat-suggestion mb-3">
+        <div class="row align-items-center">
+          <div class="col-6 text-center">
+            <% movie = Movie.find_by(api_movie_id: fetch_movie_id(suggestion["movie_name"])) %>
+            <% if movie %>
+              <%= link_to movie_path(movie), data: { turbo_frame: "_top" }, class: "text-decoration-none text-reset" do %>
+                <%= image_tag best_movie_poster_url(movie), class: "card-img-top suggestion-poster rounded img-fluid", alt: movie.title %>
+              <% end %>
+            <% end %>
+          </div>
+          <div class="col-6">
+            <p class="mb-1"><strong><%= suggestion["movie_name"] %></strong></p>
+            <p class="mb-0"><%= suggestion["response_content"] %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
 </div>

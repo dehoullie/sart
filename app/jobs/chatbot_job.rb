@@ -1,3 +1,4 @@
+require 'json'
 class ChatbotJob < ApplicationJob
   queue_as :default
 
@@ -6,16 +7,64 @@ class ChatbotJob < ApplicationJob
     chatgpt_response = client.chat(
       parameters: {
         model: "gpt-4o-mini",
-        messages: questions_formatted_for_openai # to code as private method
+        messages: questions_formatted_for_openai,
+        functions: [
+          {
+            name: "recommend_movies",
+            description: "Suggest 3 movies with explanations based on user's favorite movies and question",
+            parameters: {
+              type: "object",
+              properties: {
+                suggestions: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      movie_name: { type: "string" },
+                      response_content: { type: "string" }
+                    },
+                    required: ["movie_name", "response_content"]
+                  }
+                }
+              },
+              required: ["suggestions"]
+            }
+          }
+        ],
+        function_call: { name: "recommend_movies" }
       }
     )
 
-    new_content = chatgpt_response["choices"][0]["message"]["content"]
-    question.update(ai_answer: new_content)
+    # extract the function call arguments and parse the JSON
+    function_call = chatgpt_response.dig("choices", 0, "message", "function_call")
+    args_json      = function_call["arguments"] || "{}"
+    result         = JSON.parse(args_json)
+    question.update(ai_answer: args_json)
+
+    # Kick off a TMDb lookup + SaveMovieJob for each suggested movie name
+    (result["suggestions"] || []).each do |suggestion|
+      SearchMovieByNameJob.perform_later(
+        suggestion["movie_name"])
+
+      # append the explanation now into the chat
+      Turbo::StreamsChannel.broadcast_append_to(
+        "question_#{@question.id}",
+        target:  "question_#{@question.id}",
+        partial: "questions/suggestion",
+        locals:  { suggestion: suggestion }
+      )
+    end
+    # Then update the question header…
     Turbo::StreamsChannel.broadcast_update_to(
       "question_#{@question.id}",
-      target: "question_#{@question.id}",
-      partial: "questions/question", locals: { question: question })
+      target: dom_id(@question),
+      partial: "questions/question",
+      locals: { question: @question }
+    )
+
+    # store the raw JSON into ai_answer (or adapt to your model)
+    # question.update(ai_answer: args_json)
+    # @question.update(ai_answer: args_json)
   end
 
   private

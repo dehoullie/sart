@@ -59,4 +59,20 @@ module ApplicationHelper
       movie_poster_url(movie)
     end
   end
+
+  def fetch_movie_id(query)
+    api_token = ENV['TMDB_API_KEY']
+    tmdb_url = URI("https://api.themoviedb.org/3/search/movie?query=#{CGI.escape(query)}&include_adult=false&language=en-US&page=1")
+    http     = Net::HTTP.new(tmdb_url.host, tmdb_url.port)
+    http.use_ssl = true
+    req      = Net::HTTP::Get.new(tmdb_url)
+    req["Authorization"] = "Bearer #{api_token}"
+    req["Accept"]        = "application/json"
+    tmdb_res = http.request(req)
+    results  = JSON.parse(tmdb_res.body)["results"] || []
+
+    first_result = results.first
+    movie_id = first_result["id"]
+    return movie_id
+  end
 end

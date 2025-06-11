@@ -1,0 +1,19 @@
+<div class="chat-suggestion d-flex mb-3">
+  <div class="me-2">
+    <% movie = Movie.find_by(title: suggestion["movie_name"]) %>
+    <% poster_url =
+         if movie
+           best_movie_poster_url(movie)
+         else
+           tmdb_poster_url_by_name(suggestion["movie_name"]) || "https://placehold.co/100x150"
+         end %>
+    <%= link_to movie_path(movie), data: { turbo_frame: "_top" },
+                      class: "text-decoration-none text-reset" do %>
+    <%= image_tag poster_url, alt: suggestion["movie_name"], class: "suggestion-poster rounded img-fluid" %>
+   <% end %>
+  </div>
+  <div>
+    <strong><%= suggestion["movie_name"] %></strong>
+    <p><%= suggestion["response_content"] %></p>
+  </div>
+</div>
