@@ -11,10 +11,22 @@ class SaveMovieJob < ApplicationJob
   API_TOKEN = ENV['TMDB_API_KEY']
   BASE_URL   = 'https://api.themoviedb.org/3'
 
-  def perform(api_movie_id, query = nil)
+  def perform(api_movie_id, query = nil, chat = false)
     if Movie.exists?(api_movie_id: api_movie_id)
       puts "SaveMovieJob: Movie with api_movie_id=#{api_movie_id} already exists"
-      return
+      if chat
+        puts "SaveMovieJob: Returning the movie from db"
+        Turbo::StreamsChannel.broadcast_append_to(
+        "question_#{@question.id}",
+        target:  "question_#{@question.id}",
+        partial: "questions/suggestion",
+        locals:  { suggestion: suggestion }
+      )
+      else
+
+        return
+      end
+
     end
 
     details = fetch_json("/movie/#{api_movie_id}?language=en-US")
@@ -56,6 +68,14 @@ class SaveMovieJob < ApplicationJob
         target: "results_list",
         partial: "shared/movie_card",
         locals: { movie: movie }
+      )
+    else
+      # Run if doesn't have query, so that means is the chat
+      Turbo::StreamsChannel.broadcast_append_to(
+        "question_#{@question.id}",
+        target:  "question_#{@question.id}",
+        partial: "questions/suggestion",
+        locals:  { suggestion: suggestion }
       )
     end
 
