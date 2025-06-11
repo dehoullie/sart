@@ -39,6 +39,7 @@ class ChatbotJob < ApplicationJob
     function_call = chatgpt_response.dig("choices", 0, "message", "function_call")
     args_json      = function_call["arguments"] || "{}"
     result         = JSON.parse(args_json)
+    question.update(ai_answer: args_json)
 
     # Kick off a TMDb lookup + SaveMovieJob for each suggested movie name
     (result["suggestions"] || []).each do |suggestion|
@@ -62,7 +63,8 @@ class ChatbotJob < ApplicationJob
     )
 
     # store the raw JSON into ai_answer (or adapt to your model)
-    question.update(ai_answer: args_json)
+    # question.update(ai_answer: args_json)
+    # @question.update(ai_answer: args_json)
   end
 
   private
