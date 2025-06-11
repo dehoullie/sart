@@ -4,7 +4,7 @@ class GenresController < ApplicationController
     @genres = Genre.all
     @genre = Genre.find_by(name: params[:genre]) if params[:genre]
     if @genre
-      @movies = @genre.movies.includes(:genres).order(popularity: :desc)
+      @movies = @genre.movies.includes(:genres).order(popularity: :desc).limit(20)
       render partial: "shared/results", locals: { movies: @movies }
 
     else
