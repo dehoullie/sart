@@ -105,7 +105,23 @@
 <div class="container mb-5">
   <div class="row">
     <div class="col-12">
-      <h4 class="fw-bold">Overview</h4>
+      <div class="d-flex align-items-center mb-2">
+        <h4 class="fw-bold mb-0 me-2">Overview</h4>
+        <button
+          type="button"
+          class="btn btn-light btn-sm d-flex align-items-center px-2 py-1 rounded-pill ms-auto"
+          data-controller="share"
+          data-share-title-value="<%= @movie.title %>"
+          data-share-text-value="<%= @movie.overview.truncate(100) %>"
+          data-action="click->share#share"
+          title="Share this movie"
+        >
+          <span class="me-2">
+            <%= lucide_icon 'send', size: 20 %>
+          </span>
+          <span style="">Share</span>
+        </button>
+      </div>
       <p class="text-muted">
         <%= @movie.overview %>
       </p>
