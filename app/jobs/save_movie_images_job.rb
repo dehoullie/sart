@@ -11,43 +11,23 @@ class SaveMovieImagesJob < ApplicationJob
     details = fetch_json("/movie/#{api_movie_id}?language=en-US")
 
     # Poster image
-    if details['poster_path'].present?
-      poster_id = "sart/movies/#{api_movie_id}_poster"
-      unless cloudinary_resource_exists?(poster_id)
-        Cloudinary::Uploader.upload(
-          "https://image.tmdb.org/t/p/original#{details['poster_path']}",
-          public_id: poster_id,
-          overwrite:  false
-        )
-      end
-      unless movie.poster.attached?
-        url = Cloudinary::Utils.cloudinary_url(poster_id)
-        movie.poster.attach(
-          io:           URI.open(url),
-          filename:     "#{api_movie_id}_poster.jpg",
-          content_type: 'image/jpeg'
-        )
-      end
+    if details['poster_path'].present? && !movie.poster.attached?
+      movie.poster.attach(
+        io: URI.open("https://image.tmdb.org/t/p/w185#{details['poster_path']}"),
+        filename: "#{api_movie_id}_poster_w185.jpg",
+        content_type: 'image/jpeg',
+        key: "sart/movies/#{api_movie_id}_poster"
+      )
     end
 
     # Backdrop image
-    if details['backdrop_path'].present?
-      backdrop_id = "sart/movies/#{api_movie_id}_backdrop"
-      unless cloudinary_resource_exists?(backdrop_id)
-        Cloudinary::Uploader.upload(
-          "https://image.tmdb.org/t/p/original#{details['backdrop_path']}",
-          public_id: backdrop_id,
-          overwrite:  false
-        )
-      end
-      unless movie.backdrop.attached?
-        url = Cloudinary::Utils.cloudinary_url(backdrop_id)
-        movie.backdrop.attach(
-          io:           URI.open(url),
-          filename:     "#{api_movie_id}_backdrop.jpg",
-          content_type: 'image/jpeg'
-        )
-      end
+    if details['backdrop_path'].present? && !movie.backdrop.attached?
+      movie.backdrop.attach(
+        io: URI.open("https://image.tmdb.org/t/p/w780#{details['backdrop_path']}"),
+        filename: "#{api_movie_id}_backdrop_w780.jpg",
+        content_type: 'image/jpeg',
+        key: "sart/movies/#{api_movie_id}_backdrop"
+      )
     end
   end
 
@@ -60,12 +40,5 @@ class SaveMovieImagesJob < ApplicationJob
     req['accept']        = 'application/json'
     req['Authorization'] = "Bearer #{API_TOKEN}"
     JSON.parse(http.request(req).body)
-  end
-
-  def cloudinary_resource_exists?(public_id)
-    Cloudinary::Api.resource(public_id)
-    true
-  rescue Cloudinary::Api::NotFound
-    false
   end
 end

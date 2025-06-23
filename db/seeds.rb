@@ -30,6 +30,20 @@ require 'cloudinary'
 require 'cloudinary/uploader'
 require 'cloudinary/utils'
 
+#
+# Cleanup: Destroy all records and attachments before seeding
+puts "🧹 Cleaning database..."
+Character.destroy_all
+MovieDirector.destroy_all
+MoviesGenre.destroy_all
+Cast.destroy_all
+Director.destroy_all
+Genre.destroy_all
+Movie.destroy_all
+puts "🧹 Database cleaned."
+
+# -----------------------------------------------------------------------------
+
 # If you placed the helper in lib/cloudinary_helper.rb, require it here:
 # (Uncomment the next two lines if you created lib/cloudinary_helper.rb)
 # require_relative '../lib/cloudinary_helper'
