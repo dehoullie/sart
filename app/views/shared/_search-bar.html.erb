@@ -1,81 +1,82 @@
-<div class="search-bar fixed-top">
-<form method="get"
-      action="<%= movies_path %>"
-      class="px-3 py-3 banner-form d-flex"
-      data-turbo-frame="movies_container"
-      data-controller="search-suggestions"
-      autocomplete="off">
-  <div class="input-group">
-    <input class="form-control border blurry-me"
-           type="search"
-           id="movie-search"
-           placeholder="Search for movies, actors, directors..."
-           name="query"
-           aria-label="Search"
-           data-action="keyup->search-suggestions#onKeyUp"
-           data-search-suggestions-target="input">
-    <span class="input-group-append">
-      <button class="btn btn-outline-secondary border-start-0 border ms-n5 blurry-me h-100 d-none"
-              data-search-suggestions-target="cancelButton"
-              data-action="click->search-suggestions#onCancelClick"
-              type="button">
-        <%= lucide_icon('x') %>
+
+  <div class="search-bar fixed-top">
+  <form method="get"
+        action="<%= movies_path %>"
+        class="px-3 py-3 banner-form d-flex"
+        data-turbo-frame="movies_container"
+        data-controller="search-suggestions"
+        autocomplete="off">
+    <div class="input-group">
+      <input class="form-control border blurry-me"
+            type="search"
+            id="movie-search"
+            placeholder="Search for movies, actors, directors..."
+            name="query"
+            aria-label="Search"
+            data-action="keyup->search-suggestions#onKeyUp"
+            data-search-suggestions-target="input">
+      <span class="input-group-append">
+        <button class="btn btn-outline-secondary border-start-0 border ms-n5 blurry-me h-100 d-none"
+                data-search-suggestions-target="cancelButton"
+                data-action="click->search-suggestions#onCancelClick"
+                type="button">
+          <%= lucide_icon('x') %>
+        </button>
+      </span>
+    </div>
+
+    <!-- Country button in header (opens modal) -->
+    <div class="col-auto ms-2">
+      <button class="btn btn-outline-secondary h-100 blurry-me"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#countryModal">
+        <!-- Turbo Frame around the flag itself -->
+        <%= turbo_frame_tag "country_flag" do %>
+          <%= render partial: "shared/country_flag", locals: { country_code: session[:country_code].to_s.downcase } %>
+        <% end %>
       </button>
-    </span>
+    </div>
+  </form>
+
+  <!-- Modal for picking a country -->
+
   </div>
-
-  <!-- Country button in header (opens modal) -->
-  <div class="col-auto ms-2">
-    <button class="btn btn-outline-secondary h-100 blurry-me"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#countryModal">
-      <!-- Turbo Frame around the flag itself -->
-      <%= turbo_frame_tag "country_flag" do %>
-        <%= render partial: "shared/country_flag", locals: { country_code: session[:country_code].to_s.downcase } %>
-      <% end %>
-    </button>
-  </div>
-</form>
-
-<!-- Modal for picking a country -->
-
-</div>
-<div class="modal fade" id="countryModal" tabindex="-1" aria-labelledby="countryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down" style="max-height: 100vh;">
-    <div class="modal-content" style="max-height: 100vh;">
-      <div class="modal-header">
-        <h5 class="modal-title" id="countryModalLabel">Choose your country</h5>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
-        <div class="row">
-          <% Movie::COUNTRIES.each do |country| %>
-            <div class="col-12 mb-2 country-btn-wrapper">
-              <%= form_with url: set_country_path, method: :post do |f| %>
-                <%= f.hidden_field :country_code, value: country[:code] %>
-                <% if defined?(@movie) && @movie.present? %>
-                  <%= f.hidden_field :movie_id, value: @movie.id %>
-                <% end %>
-                <button type="submit"
-                        class="btn btn-outline-secondary w-100 country-btn text-white"
-                        data-bs-dismiss="modal">
-                  <span class="fi fi-<%= country[:code] %> fis"></span>
-                  <%= country[:name] %>
-                </button>
-              <% end %>
-            </div>
-          <% end %>
+  <div class="modal fade" id="countryModal" tabindex="-1" aria-labelledby="countryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down" style="max-height: 100vh;">
+      <div class="modal-content" style="max-height: 100vh;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="countryModalLabel">Choose your country</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal">Close</button>
+        <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
+          <div class="row">
+            <% Movie::COUNTRIES.each do |country| %>
+              <div class="col-12 mb-2 country-btn-wrapper">
+                <%= form_with url: set_country_path, method: :post do |f| %>
+                  <%= f.hidden_field :country_code, value: country[:code] %>
+                  <% if defined?(@movie) && @movie.present? %>
+                    <%= f.hidden_field :movie_id, value: @movie.id %>
+                  <% end %>
+                  <button type="submit"
+                          class="btn btn-outline-secondary w-100 country-btn text-white"
+                          data-bs-dismiss="modal">
+                    <span class="fi fi-<%= country[:code] %> fis"></span>
+                    <%= country[:name] %>
+                  </button>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
