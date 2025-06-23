@@ -60,12 +60,15 @@
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-    <%= render partial: "shared/footer" %>
-    <%= render "shared/flashes" %>
 
-    <%= render partial: "shared/search-bar" %>
-
-    <%= yield %>
-
+  <div class="mx-auto" style="max-width: 1200px;">
+  <%# This next container should be boxed layout max 1200px margin auto (to be centralized) %>
+    <div class="container-fluid">
+      <%= render partial: "shared/footer" %>
+      <%= render "shared/flashes" %>
+      <%= render partial: "shared/search-bar" %>
+      <%= yield %>
+    </div>
+  </div>
   </body>
 </html>
