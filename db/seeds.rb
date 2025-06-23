@@ -93,10 +93,11 @@ puts "✅ Genres in DB: #{Genre.count}"
 # -----------------------------------------------------------------------------
 # 2) Fetch top-rated movies and process each one
 puts "🎬 Seeding top-rated movies..."
+MOVIE_LIMIT = 5 # Change this value to seed more or fewer movies
 
 movies_data = fetch_json("/movie/top_rated?language=en-US&page=1")["results"]
 
-movies_data.each do |movie_data|
+movies_data.first(MOVIE_LIMIT).each do |movie_data|
   details = fetch_json("/movie/#{movie_data['id']}?language=en-US")
   next unless details["title"].present?
 

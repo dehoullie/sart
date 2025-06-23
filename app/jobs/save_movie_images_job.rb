@@ -12,21 +12,43 @@ class SaveMovieImagesJob < ApplicationJob
 
     # Poster image
     if details['poster_path'].present? && !movie.poster.attached?
+      poster_public_id = "sart/movies/#{api_movie_id}_poster"
+
+      unless cloudinary_resource_exists?(poster_public_id)
+        poster_url = "https://image.tmdb.org/t/p/original#{details['poster_path']}"
+        Cloudinary::Uploader.upload(
+          poster_url,
+          public_id: poster_public_id,
+          overwrite: false
+        )
+      end
+
+      cloudinary_link = Cloudinary::Utils.cloudinary_url(poster_public_id)
       movie.poster.attach(
-        io: URI.open("https://image.tmdb.org/t/p/w185#{details['poster_path']}"),
-        filename: "#{api_movie_id}_poster_w185.jpg",
-        content_type: 'image/jpeg',
-        key: "sart/movies/#{api_movie_id}_poster"
+        io: URI.open(cloudinary_link),
+        filename: "#{api_movie_id}_poster.jpg",
+        content_type: 'image/jpeg'
       )
     end
 
     # Backdrop image
     if details['backdrop_path'].present? && !movie.backdrop.attached?
+      backdrop_public_id = "sart/movies/#{api_movie_id}_backdrop"
+
+      unless cloudinary_resource_exists?(backdrop_public_id)
+        backdrop_url = "https://image.tmdb.org/t/p/original#{details['backdrop_path']}"
+        Cloudinary::Uploader.upload(
+          backdrop_url,
+          public_id: backdrop_public_id,
+          overwrite: false
+        )
+      end
+
+      cloudinary_link = Cloudinary::Utils.cloudinary_url(backdrop_public_id)
       movie.backdrop.attach(
-        io: URI.open("https://image.tmdb.org/t/p/w780#{details['backdrop_path']}"),
-        filename: "#{api_movie_id}_backdrop_w780.jpg",
-        content_type: 'image/jpeg',
-        key: "sart/movies/#{api_movie_id}_backdrop"
+        io: URI.open(cloudinary_link),
+        filename: "#{api_movie_id}_backdrop.jpg",
+        content_type: 'image/jpeg'
       )
     end
   end
@@ -40,5 +62,12 @@ class SaveMovieImagesJob < ApplicationJob
     req['accept']        = 'application/json'
     req['Authorization'] = "Bearer #{API_TOKEN}"
     JSON.parse(http.request(req).body)
+  end
+
+  def cloudinary_resource_exists?(public_id)
+    Cloudinary::Api.resource(public_id)
+    true
+  rescue Cloudinary::Api::NotFound
+    false
   end
 end

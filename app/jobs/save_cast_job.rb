@@ -17,11 +17,22 @@ class SaveCastJob < ApplicationJob
       end
 
       if cast_data['profile_path'].present? && !cast.photo.attached?
+        profile_public_id = "sart/cast/#{cast.api_cast_id}_profile"
+
+        unless cloudinary_resource_exists?(profile_public_id)
+          profile_url = "https://image.tmdb.org/t/p/original#{cast_data['profile_path']}"
+          Cloudinary::Uploader.upload(
+            profile_url,
+            public_id: profile_public_id,
+            overwrite: false
+          )
+        end
+
+        cloudinary_link = Cloudinary::Utils.cloudinary_url(profile_public_id)
         cast.photo.attach(
-          io:           URI.open("https://image.tmdb.org/t/p/w185#{cast_data['profile_path']}"),
-          filename:     "#{cast.api_cast_id}_profile_w185.jpg",
-          content_type: "image/jpeg",
-          key:          "sart/cast/#{cast.api_cast_id}_profile"
+          io: URI.open(cloudinary_link),
+          filename: "#{cast.api_cast_id}_profile.jpg",
+          content_type: "image/jpeg"
         )
       end
 
@@ -48,5 +59,12 @@ class SaveCastJob < ApplicationJob
     req['accept']        = 'application/json'
     req['Authorization'] = "Bearer #{API_TOKEN}"
     JSON.parse(http.request(req).body)
+  end
+
+  def cloudinary_resource_exists?(public_id)
+    Cloudinary::Api.resource(public_id)
+    true
+  rescue Cloudinary::Api::NotFound
+    false
   end
 end
