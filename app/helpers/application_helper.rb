@@ -1,12 +1,12 @@
 module ApplicationHelper
   # def cloudinary_poster(movie)
-  #   "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
+  #   "https://res.cloudinary.com/dphhzuobi/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
   # end
 
   def cloudinary_poster(movie)
   if movie.poster.attached?
     # Use the attached Cloudinary poster
-    "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
+    "https://res.cloudinary.com/dphhzuobi/image/upload/sart/movies/#{movie.api_movie_id}_poster.jpg"
   else
     # Fallback: fetch poster_path from TMDb API (SLOW if used in views!)
     poster_path = fetch_poster_path_from_api(movie.api_movie_id)
@@ -19,11 +19,11 @@ module ApplicationHelper
 end
 
   def cloudinary_backdrop(movie)
-    "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/movies/#{movie.api_movie_id}_backdrop"
+    "https://res.cloudinary.com/dphhzuobi/image/upload/sart/movies/#{movie.api_movie_id}_backdrop"
   end
 
   def cloudinary_cast_photo(cast)
-    "https://res.cloudinary.com/dvhp2dk43/image/upload/sart/cast/#{cast.api_cast_id}_profile"
+    "https://res.cloudinary.com/dphhzuobi/image/upload/sart/cast/#{cast.api_cast_id}_profile"
   end
 
   # NEW: Returns the best poster URL (Cloudinary if attached, else TMDb live, else fallback)
